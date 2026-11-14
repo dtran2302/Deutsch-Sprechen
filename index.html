@@ -943,7 +943,7 @@
         }
 
         // =========================================================================
-        // 6. TAB 1: SHADOWING (NGUYÊN BẢN PC + FIX RIÊNG CHO SAFARI iOS)
+        // 6. TAB 1: SHADOWING (1 NÚT DUY NHẤT GIỐNG HỆT PC)
         // =========================================================================
         function renderShadowingList() {
             const container = document.getElementById('shadowing-list');
@@ -1095,12 +1095,12 @@
             feedbackBox.innerHTML = `<div class="text-rose-600 font-semibold flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang thu âm... Hãy đọc to câu tiếng Đức ở trên!</div>`;
 
             // =================================================================
-            // NHÁNH RIÊNG CHO iPHONE / iPAD (DÙNG WAV ĐỂ SAFARI PHÁT LẠI ĐƯỢC)
+            // NHÁNH iPHONE / iPAD: THU ÂM WAV + THỬ NHẬN DIỆN GIỌNG SONG SONG
             // =================================================================
             if (isIOSDevice) {
                 stopSpeech();
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    showToast('Hãy mở bằng trình duyệt Safari trên iPhone để thu âm!', 'warning');
+                    showToast('Hãy mở trang này bằng Safari trên iPhone để thu âm nhé!', 'warning');
                     await finalizeShadowingSentence(index);
                     return;
                 }
@@ -1124,15 +1124,39 @@
                     };
                     source.connect(processor);
                     processor.connect(audioCtx.destination);
+
+                    // Thử chạy nhận diện chữ nếu đang mở bằng Safari chuẩn
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    if (SpeechRecognition) {
+                        try {
+                            const rec = new SpeechRecognition();
+                            rec.lang = 'de-DE';
+                            rec.continuous = false;
+                            rec.interimResults = true;
+                            rec.onresult = (event) => {
+                                let txt = '';
+                                for (let i = 0; i < event.results.length; i++) {
+                                    txt += event.results[i][0].transcript + ' ';
+                                }
+                                state.liveShadowTranscript = txt.trim();
+                                if (state.recordingSentenceIndex === index && state.liveShadowTranscript) {
+                                    feedbackBox.innerHTML = `<div class="text-slate-600">Đang nhận diện: <span class="font-bold text-slate-900">"${state.liveShadowTranscript}"</span></div>`;
+                                }
+                            };
+                            rec.onerror = () => {};
+                            state.activeRecognition = rec;
+                            rec.start();
+                        } catch (e) {}
+                    }
                 } catch (err) {
-                    showToast('Không thể mở Micro trên iPhone. Hãy cấp quyền Micro cho Safari!', 'warning');
+                    showToast('Không mở được Micro. Hãy bấm dấu ... ở góc trên -> Mở bằng Safari!', 'warning');
                     await finalizeShadowingSentence(index);
                 }
                 return;
             }
 
             // =================================================================
-            // NHÁNH PC (GIỮ NGUYÊN 100% CODE GỐC CỦA BẠN)
+            // NHÁNH PC: GIỮ NGUYÊN 100% CODE GỐC
             // =================================================================
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 try {
@@ -1233,6 +1257,9 @@
             if (idx === null) return;
 
             if (isIOSDevice) {
+                if (state.activeRecognition) {
+                    try { state.activeRecognition.stop(); } catch (e) {}
+                }
                 try {
                     if (state.iosProcessor) state.iosProcessor.disconnect();
                     if (state.iosStream) state.iosStream.getTracks().forEach(t => t.stop());
@@ -1382,7 +1409,6 @@
             }
         }
 
-        // Thuật toán LCS (Longest Common Subsequence) chèn đúng vị trí từ thiếu mà không làm lệch các từ phía sau
         function diffWordsLCS(expectedArr, actualArr) {
             const m = expectedArr.length;
             const n = actualArr.length;
@@ -1754,7 +1780,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // Lọc bỏ các từ bị lặp do trình duyệt ghép âm tạm thời (ví dụ "geht's es" -> "geht's")
         function cleanRecognizedGerman(rawText) {
             return rawText
                 .replace(/\bgeht's\s+es\b/gi, "geht's")
@@ -1788,7 +1813,7 @@
             chatRecognition = new SpeechRecognition();
             chatRecognition.lang = 'de-DE';
             chatRecognition.continuous = !isIOSDevice;
-            chatRecognition.interimResults = false; // Chỉ chốt cụm hoàn chỉnh để tránh lặp từ rác
+            chatRecognition.interimResults = false;
 
             let baseText = input.value ? input.value.trim() + ' ' : '';
 
