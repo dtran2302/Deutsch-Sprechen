@@ -34,6 +34,14 @@
             background-color: #e11d48 !important;
             color: #ffffff !important;
         }
+        @keyframes pop-word {
+            0% { transform: scale(0.85); }
+            60% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .word-chip-hit {
+            animation: pop-word 0.25s ease-out;
+        }
         .blank-input {
             border-bottom: 2px solid #0d9488;
             background-color: #f0fdfa;
@@ -182,13 +190,13 @@
         </section>
 
         <!-- ===================================================================== -->
-        <!-- TAB 1: SHADOWING (ĐỌC NHẠI & KIỂM TRA PHÁT ÂM)                        -->
+        <!-- TAB 1: SHADOWING (ĐỌC NHẠI & NHẢY TỪ REALTIME)                        -->
         <!-- ===================================================================== -->
         <section id="tab-shadowing" class="tab-content space-y-4">
             <div class="bg-white rounded-2xl border border-teal-100 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h3 class="font-bold text-slate-800 text-base">Luyện đọc nhại (Shadowing)</h3>
-                    <p class="text-xs text-slate-500">Nghe máy đọc mẫu, kiểm tra phát âm từng từ hoặc thu âm giọng thật chuẩn WAV để nghe lại trên iPhone.</p>
+                    <p class="text-xs text-slate-500">Nghe máy đọc mẫu, bấm <strong>Chấm phát âm</strong> để thấy từng từ nhảy màu xanh ngay khi đọc, hoặc thu giọng thật chuẩn WAV.</p>
                 </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <button onclick="playFullText()" class="flex-1 sm:flex-initial bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer">
@@ -491,7 +499,7 @@
             speechRate: 0.85,
             selectedVoiceURI: '',
             voices: [],
-            // Shadowing state (tách biệt hoàn toàn STT và WAV AudioContext Recorder cho iOS)
+            // Shadowing state
             userAudioBlobs: {},
             sttSentenceIndex: null,
             activeRecognition: null,
@@ -902,7 +910,7 @@
         }
 
         // =========================================================================
-        // 6. TAB 1: SHADOWING (TÁCH BIỆT STT & THU ÂM WAV CHUẨN SAFARI iOS)
+        // 6. TAB 1: SHADOWING (NHẢY TỪ REALTIME + THU ÂM WAV CHUẨN SAFARI iOS)
         // =========================================================================
         function renderShadowingList() {
             const container = document.getElementById('shadowing-list');
@@ -998,7 +1006,55 @@
             }
         }
 
-        // --- CHẾ ĐỘ A: CHẤM PHÁT ÂM BẰNG SPEECH RECOGNITION ---
+        // --- CHẾ ĐỘ A: CHẤM PHÁT ÂM & NHẢY TỪNG CHỮ REALTIME ---
+        function renderLiveWordProgress(index, spokenText, isFinal = false) {
+            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
+            if (!feedbackBox) return;
+
+            const targetText = state.sentences[index] || '';
+            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
+            const targetWords = cleanWords(targetText);
+            const spokenWords = cleanWords(spokenText);
+
+            let matched = 0;
+            const wordChips = targetWords.map(w => {
+                const hit = spokenWords.includes(w);
+                if (hit) matched++;
+                if (hit) {
+                    return `<span class="word-chip-hit px-2.5 py-1 rounded-lg font-bold text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">${w}</span>`;
+                } else if (isFinal) {
+                    return `<span class="px-2.5 py-1 rounded-lg font-semibold text-xs bg-rose-100 text-rose-700 border border-rose-200">${w}</span>`;
+                } else {
+                    return `<span class="px-2.5 py-1 rounded-lg font-medium text-xs bg-white text-slate-400 border border-slate-200">${w}</span>`;
+                }
+            }).join(' ');
+
+            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
+            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
+
+            if (!isFinal) {
+                feedbackBox.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-rose-600 font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang nghe (từng từ sẽ nhảy xanh khi đọc trúng):</span>
+                        <span class="font-bold px-2.5 py-0.5 rounded-full text-xs bg-teal-100 text-teal-800">${matched}/${targetWords.length} từ (${score}%)</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1">${wordChips}</div>
+                    ${spokenText ? `<p class="text-xs text-slate-600 pt-1 border-t border-slate-200/80">Đang nghe: <span class="font-semibold text-slate-900">"${spokenText}"</span></p>` : ''}
+                `;
+            } else {
+                feedbackBox.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
+                        <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
+                    </div>
+                    <p class="text-slate-900 font-semibold">"${spokenText}"</p>
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
+                        <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
+                    </div>
+                `;
+            }
+        }
+
         async function toggleShadowingSTT(index) {
             if (state.wavRecordingIndex !== null) {
                 await stopActiveWavRecording();
@@ -1028,7 +1084,7 @@
             btn.innerHTML = '<i class="fa-solid fa-stop-circle"></i> <span>Dừng chấm</span>';
 
             feedbackBox.classList.remove('hidden');
-            feedbackBox.innerHTML = `<div class="text-rose-600 font-semibold flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang nghe bạn đọc để chấm từng từ...</div>`;
+            renderLiveWordProgress(index, '', false);
 
             try {
                 if (state.activeRecognition) {
@@ -1047,8 +1103,8 @@
                         else interimStr += event.results[i][0].transcript;
                     }
                     state.liveShadowTranscript = (finalStr + interimStr).trim();
-                    if (state.sttSentenceIndex === index && state.liveShadowTranscript) {
-                        feedbackBox.innerHTML = `<div class="text-slate-600">Đang nhận diện: <span class="font-bold text-slate-900">"${state.liveShadowTranscript}"</span></div>`;
+                    if (state.sttSentenceIndex === index) {
+                        renderLiveWordProgress(index, state.liveShadowTranscript, false);
                     }
                 };
 
@@ -1090,40 +1146,15 @@
             btn.innerHTML = '<i class="fa-solid fa-spell-check"></i> <span>Chấm phát âm</span>';
 
             const spokenText = state.liveShadowTranscript.trim();
-            const targetText = state.sentences[index] || '';
-
             if (!spokenText) {
                 feedbackBox.innerHTML = `<div class="text-amber-700 font-medium">Chưa nghe rõ tiếng bạn đọc. Hãy bấm <strong>Chấm phát âm</strong> và đọc lại gần Micro nhé!</div>`;
                 return;
             }
 
-            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
-            const targetWords = cleanWords(targetText);
-            const spokenWords = cleanWords(spokenText);
-
-            let matched = 0;
-            const wordChips = targetWords.map(w => {
-                const hit = spokenWords.includes(w);
-                if (hit) matched++;
-                return `<span class="px-2 py-0.5 rounded-md font-semibold text-xs ${hit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">${w}</span>`;
-            }).join(' ');
-
-            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
-            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
-
-            feedbackBox.innerHTML = `
-                <div class="flex items-center justify-between gap-2">
-                    <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
-                    <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
-                </div>
-                <p class="text-slate-900 font-semibold">"${spokenText}"</p>
-                <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
-                    <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
-                </div>
-            `;
+            renderLiveWordProgress(index, spokenText, true);
         }
 
-        // --- CHẾ ĐỘ B: THU ÂM GIỌNG THẬT CHUẨN WAV QUA AUDIOCONTEXT (TƯƠNG THÍCH 100% iOS SAFARI) ---
+        // --- CHẾ ĐỘ B: THU ÂM GIỌNG THẬT CHUẨN WAV QUA AUDIOCONTEXT ---
         async function toggleShadowingWav(index) {
             if (state.sttSentenceIndex !== null) {
                 stopActiveSTT();
