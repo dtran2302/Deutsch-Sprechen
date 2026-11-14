@@ -943,7 +943,7 @@
         }
 
         // =========================================================================
-        // 6. TAB 1: SHADOWING (1 NÚT DUY NHẤT GIỐNG HỆT PC)
+        // 6. TAB 1: SHADOWING (1 NÚT DUY NHẤT + HIỆN ĐỦ BẢNG ĐỘ KHỚP TRÊN iOS)
         // =========================================================================
         function renderShadowingList() {
             const container = document.getElementById('shadowing-list');
@@ -1071,6 +1071,55 @@
             return new Blob([view], { type: 'audio/wav' });
         }
 
+        async function transcribeAudioWithGemini(base64Audio, mimeType, targetSentence) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            const prompt = `Listen carefully to this German audio recording. The speaker is practicing reading this target sentence: "${targetSentence}".
+Transcribe ONLY the exact German words you hear the speaker actually say. Do not auto-correct mispronounced or skipped words—transcribe what was truly spoken. Return ONLY the transcribed German text without quotes, punctuation, or explanation. If the audio is silent or unintelligible, return empty string.`;
+
+            const payload = {
+                contents: [{
+                    parts: [
+                        { text: prompt },
+                        { inlineData: { mimeType: mimeType, data: base64Audio } }
+                    ]
+                }]
+            };
+
+            const result = await fetchWithRetry(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            return (result?.candidates?.[0]?.content?.parts?.[0]?.text || '').trim();
+        }
+
+        function renderShadowingComparisonCard(feedbackBox, targetText, spokenText) {
+            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
+            const targetWords = cleanWords(targetText);
+            const spokenWords = cleanWords(spokenText);
+
+            let matched = 0;
+            const wordChips = targetWords.map(w => {
+                const hit = spokenWords.includes(w);
+                if (hit) matched++;
+                return `<span class="px-2 py-0.5 rounded-md font-semibold text-xs ${hit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">${w}</span>`;
+            }).join(' ');
+
+            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
+            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
+
+            feedbackBox.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
+                    <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
+                </div>
+                <p class="text-slate-900 font-semibold">"${spokenText}"</p>
+                <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
+                    <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
+                </div>
+            `;
+        }
+
         async function toggleShadowingRecording(index) {
             if (state.recordingSentenceIndex === index) {
                 await stopActiveShadowing();
@@ -1095,7 +1144,7 @@
             feedbackBox.innerHTML = `<div class="text-rose-600 font-semibold flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang thu âm... Hãy đọc to câu tiếng Đức ở trên!</div>`;
 
             // =================================================================
-            // NHÁNH iPHONE / iPAD: THU ÂM WAV + THỬ NHẬN DIỆN GIỌNG SONG SONG
+            // NHÁNH iPHONE / iPAD: THU ÂM WAV SẠCH -> DỪNG LÀ GỬI AI CHẤM ĐIỂM
             // =================================================================
             if (isIOSDevice) {
                 stopSpeech();
@@ -1124,32 +1173,8 @@
                     };
                     source.connect(processor);
                     processor.connect(audioCtx.destination);
-
-                    // Thử chạy nhận diện chữ nếu đang mở bằng Safari chuẩn
-                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                    if (SpeechRecognition) {
-                        try {
-                            const rec = new SpeechRecognition();
-                            rec.lang = 'de-DE';
-                            rec.continuous = false;
-                            rec.interimResults = true;
-                            rec.onresult = (event) => {
-                                let txt = '';
-                                for (let i = 0; i < event.results.length; i++) {
-                                    txt += event.results[i][0].transcript + ' ';
-                                }
-                                state.liveShadowTranscript = txt.trim();
-                                if (state.recordingSentenceIndex === index && state.liveShadowTranscript) {
-                                    feedbackBox.innerHTML = `<div class="text-slate-600">Đang nhận diện: <span class="font-bold text-slate-900">"${state.liveShadowTranscript}"</span></div>`;
-                                }
-                            };
-                            rec.onerror = () => {};
-                            state.activeRecognition = rec;
-                            rec.start();
-                        } catch (e) {}
-                    }
                 } catch (err) {
-                    showToast('Không mở được Micro. Hãy bấm dấu ... ở góc trên -> Mở bằng Safari!', 'warning');
+                    showToast('Không mở được Micro. Hãy cấp quyền Micro cho Safari!', 'warning');
                     await finalizeShadowingSentence(index);
                 }
                 return;
@@ -1257,9 +1282,14 @@
             if (idx === null) return;
 
             if (isIOSDevice) {
-                if (state.activeRecognition) {
-                    try { state.activeRecognition.stop(); } catch (e) {}
+                state.recordingSentenceIndex = null;
+                const btn = document.getElementById(`shadow-mic-btn-${idx}`);
+                const feedbackBox = document.getElementById(`shadow-feedback-${idx}`);
+                if (btn) {
+                    btn.classList.remove('recording-active');
+                    btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>Thu âm lại</span>';
                 }
+
                 try {
                     if (state.iosProcessor) state.iosProcessor.disconnect();
                     if (state.iosStream) state.iosStream.getTracks().forEach(t => t.stop());
@@ -1273,9 +1303,10 @@
                 if (buffers && buffers.length > 0) {
                     const wavBlob = encodeWAVFromBuffers(buffers, sampleRate);
                     const reader = new FileReader();
-                    reader.onloadend = () => {
+                    reader.onloadend = async () => {
                         const dataUrl = reader.result;
                         state.userAudioBlobs[idx] = dataUrl;
+
                         const player = document.getElementById(`shadow-audio-player-${idx}`);
                         const replayBtn = document.getElementById(`shadow-replay-btn-${idx}`);
                         if (player) {
@@ -1288,10 +1319,26 @@
                             replayBtn.classList.remove('hidden');
                             replayBtn.classList.add('flex');
                         }
+
+                        if (feedbackBox) {
+                            feedbackBox.classList.remove('hidden');
+                            feedbackBox.innerHTML = `<div class="text-teal-700 font-semibold flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích phát âm từng từ...</div>`;
+                            try {
+                                const base64Data = dataUrl.split(',')[1];
+                                const targetText = state.sentences[idx] || '';
+                                const transcribed = await transcribeAudioWithGemini(base64Data, 'audio/wav', targetText);
+                                if (transcribed) {
+                                    renderShadowingComparisonCard(feedbackBox, targetText, transcribed);
+                                } else {
+                                    feedbackBox.innerHTML = `<div class="text-slate-700"><i class="fa-solid fa-check-circle text-teal-600 mr-1"></i> Đã lưu bản thu âm! Hãy đọc to và rõ hơn gần micro để chấm từng từ nhé.</div>`;
+                                }
+                            } catch (err) {
+                                feedbackBox.innerHTML = `<div class="text-slate-700"><i class="fa-solid fa-check-circle text-teal-600 mr-1"></i> Đã lưu bản thu âm! Bạn có thể bấm Play (▶) phía trên để nghe lại giọng mình.</div>`;
+                            }
+                        }
                     };
                     reader.readAsDataURL(wavBlob);
                 }
-                await finalizeShadowingSentence(idx);
                 return;
             }
 
@@ -1327,30 +1374,7 @@
                 return;
             }
 
-            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
-            const targetWords = cleanWords(targetText);
-            const spokenWords = cleanWords(spokenText);
-
-            let matched = 0;
-            const wordChips = targetWords.map(w => {
-                const hit = spokenWords.includes(w);
-                if (hit) matched++;
-                return `<span class="px-2 py-0.5 rounded-md font-semibold text-xs ${hit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">${w}</span>`;
-            }).join(' ');
-
-            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
-            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
-
-            feedbackBox.innerHTML = `
-                <div class="flex items-center justify-between gap-2">
-                    <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
-                    <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
-                </div>
-                <p class="text-slate-900 font-semibold">"${spokenText}"</p>
-                <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
-                    <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
-                </div>
-            `;
+            renderShadowingComparisonCard(feedbackBox, targetText, spokenText);
         }
 
         function playUserShadowingAudio(index) {
