@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Deutsch Pflege & Alltag Trainer</title>
+    <link rel="apple-touch-icon" href="https://i.ibb.co/tTNgr2vv/image-9.png">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/tTNgr2vv/image-9.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f7f7;
+            color: #1e293b;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 14px rgba(225, 29, 72, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+        .recording-active {
+            animation: pulse-ring 1.5s infinite;
+            background-color: #e11d48 !important;
+            color: #ffffff !important;
+        }
+        .blank-input {
+            border-bottom: 2px solid #0d9488;
+            background-color: #f0fdfa;
+            padding: 2px 6px;
+            border-radius: 6px 6px 0 0;
+            outline: none;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: #0f766e;
+            text-align: center;
+        }
+        .blank-input:focus { background-color: #ccfbf1; border-bottom-color: #0284c7; }
+        .blank-correct { border-bottom-color: #16a34a !important; background-color: #dcfce7 !important; color: #15803d !important; }
+        .blank-wrong { border-bottom-color: #dc2626 !important; background-color: #fee2e2 !important; color: #b91c1c !important; }
+        .toggle-checkbox:checked { right: 0; border-color: #0d9488; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #0d9488; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row pb-20 md:pb-0">
+
+    <!-- THÔNG BÁO TOAST -->
+    <div id="toast-container" class="fixed top-4 right-4 left-4 md:left-auto md:w-96 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- SIDEBAR ĐIỀU HƯỚNG (DESKTOP) -->
+    <aside class="hidden md:flex md:w-64 lg:w-72 bg-white border-r border-teal-100 flex-col justify-between shrink-0 sticky top-0 h-screen shadow-sm z-20">
+        <div>
+            <div class="p-5 border-b border-teal-50 flex items-center gap-3">
+                <img src="https://i.ibb.co/tTNgr2vv/image-9.png" alt="DE" class="w-10 h-10 rounded-xl object-cover shadow-sm border border-teal-200 shrink-0">
+                <div>
+                    <h1 class="font-bold text-slate-800 text-base leading-tight">Deutsch Pflege</h1>
+                    <p class="text-xs text-teal-600 font-medium">& Alltag Trainer (A1–B1)</p>
+                </div>
+            </div>
+
+            <nav class="p-3 space-y-1.5" id="desktop-nav">
+                <button onclick="switchTab('shadowing')" data-tab="shadowing" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-teal-50 text-teal-700">
+                    <i class="fa-solid fa-headphones-simple w-5 text-center text-base"></i>
+                    <span>1. Shadowing (Đọc nhại)</span>
+                </button>
+                <button onclick="switchTab('dictation')" data-tab="dictation" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
+                    <i class="fa-solid fa-keyboard w-5 text-center text-base"></i>
+                    <span>2. Luyện chính tả</span>
+                </button>
+                <button onclick="switchTab('fillblanks')" data-tab="fillblanks" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
+                    <i class="fa-solid fa-pen-to-square w-5 text-center text-base"></i>
+                    <span>3. Điền chỗ trống</span>
+                </button>
+                <button onclick="switchTab('aichat')" data-tab="aichat" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all">
+                    <i class="fa-solid fa-comments w-5 text-center text-base"></i>
+                    <span>4. Nói chuyện với AI</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Cài đặt giọng đọc chung (Desktop) -->
+        <div class="p-4 m-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-sliders mr-1 text-teal-600"></i> Giọng đọc mẫu</span>
+                <span id="speed-display-desktop" class="text-xs font-bold text-teal-700 bg-teal-100 px-2 py-0.5 rounded-md">0.85x</span>
+            </div>
+            <input type="range" id="speech-rate-desktop" min="0.5" max="1.2" step="0.05" value="0.85" oninput="updateSpeechRate(this.value)" class="w-full accent-teal-600 cursor-pointer">
+            <div>
+                <select id="voice-select-desktop" onchange="syncVoiceSelect(this.value)" class="w-full text-xs bg-white border border-slate-200 rounded-lg p-2 text-slate-700 outline-none focus:border-teal-500">
+                    <option value="">Đang tải giọng tiếng Đức...</option>
+                </select>
+            </div>
+        </div>
+    </aside>
+
+    <!-- HEADER MOBILE -->
+    <header class="md:hidden bg-white border-b border-teal-100 px-4 py-3 sticky top-0 z-20 flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-2.5">
+            <img src="https://i.ibb.co/tTNgr2vv/image-9.png" alt="DE" class="w-8 h-8 rounded-lg object-cover shadow-sm border border-teal-200 shrink-0">
+            <div>
+                <h1 class="font-bold text-slate-800 text-sm leading-tight">Deutsch Pflege Trainer</h1>
+                <p class="text-[11px] text-teal-600 font-medium">Luyện phản xạ nói & nghe</p>
+            </div>
+        </div>
+        <button onclick="toggleMobileAudioSettings()" class="flex items-center gap-1.5 bg-teal-50 text-teal-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-teal-100">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span id="speed-display-mobile">0.85x</span>
+        </button>
+    </header>
+
+    <!-- DRAWER CÀI ĐẶT GIỌNG ĐỌC TRÊN MOBILE -->
+    <div id="mobile-audio-drawer" class="hidden md:hidden bg-white border-b border-teal-100 px-4 py-3 space-y-3 shadow-md sticky top-[57px] z-20">
+        <div class="flex items-center justify-between text-xs font-semibold text-slate-600">
+            <span>Tốc độ đọc: <strong id="speed-drawer-val" class="text-teal-700">0.85x</strong></span>
+            <button onclick="updateSpeechRate(0.85)" class="text-sky-600 underline">Mặc định (0.85x)</button>
+        </div>
+        <input type="range" id="speech-rate-mobile" min="0.5" max="1.2" step="0.05" value="0.85" oninput="updateSpeechRate(this.value)" class="w-full accent-teal-600">
+        <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Chọn giọng tiếng Đức (de-DE):</label>
+            <select id="voice-select-mobile" onchange="syncVoiceSelect(this.value)" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-700">
+                <option value="">Đang tải giọng tiếng Đức...</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="flex-1 flex flex-col max-w-6xl w-full mx-auto p-3 sm:p-5 lg:p-6 gap-4">
+
+        <!-- KHỐI 1: QUẢN LÝ VĂN BẢN ĐẦU VÀO -->
+        <section id="source-manager-section" class="bg-white rounded-2xl border border-teal-100 shadow-xs p-4 transition-all">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-xs font-bold">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </span>
+                    <h2 class="font-bold text-slate-800 text-sm sm:text-base">Văn bản luyện tập (Transcript)</h2>
+                </div>
+                <button onclick="toggleSourceEditor()" id="toggle-editor-btn" class="text-xs font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-xl transition cursor-pointer">
+                    <i class="fa-solid fa-chevron-up mr-1"></i> Thu gọn
+                </button>
+            </div>
+
+            <div id="source-editor-body" class="space-y-3">
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <select id="preset-select" onchange="loadPresetText(this.value)" class="flex-1 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-700 font-medium outline-none focus:border-teal-500">
+                        <option value="hobby">📚 Mẫu 1 (A2 Đời sống): Sở thích & Thời gian rảnh (Hobbys)</option>
+                        <option value="patient_greeting">🏥 Mẫu 2 (A2 Điều dưỡng): Chào hỏi & Hỏi thăm bệnh nhân buổi sáng</option>
+                        <option value="vital_signs">🩺 Mẫu 3 (B1 Điều dưỡng): Đo huyết áp & Hỏi triệu chứng đau</option>
+                        <option value="custom">✏️ Tự nhập / Dán văn bản tiếng Đức của bạn</option>
+                    </select>
+
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-topic-input" placeholder="Nhập chủ đề (VD: Đau bụng, Siêu thị...)" class="flex-1 sm:w-56 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-sky-500">
+                        <button onclick="generateTextWithAI()" id="btn-ai-gen" class="bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-1.5 shrink-0 transition cursor-pointer">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>AI tạo bài</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <textarea id="source-textarea" rows="3" oninput="handleSourceTextChange()" placeholder="Dán đoạn hội thoại hoặc văn bản tiếng Đức của bạn vào đây..." class="w-full text-sm sm:text-base bg-slate-50/70 border border-slate-200 rounded-xl p-3 text-slate-800 leading-relaxed outline-none focus:border-teal-500 focus:bg-white transition"></textarea>
+                    <div class="flex flex-wrap items-center justify-between gap-2 mt-2 text-xs text-slate-500">
+                        <span id="sentence-count-badge" class="font-medium text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg">6 câu được tách tự động</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="clearSourceText()" class="hover:text-rose-600 px-2 py-1 rounded-lg transition cursor-pointer"><i class="fa-solid fa-trash-can mr-1"></i>Xóa trắng</button>
+                            <button onclick="pasteFromClipboard()" class="text-sky-700 bg-sky-50 hover:bg-sky-100 font-semibold px-3 py-1 rounded-lg transition cursor-pointer"><i class="fa-solid fa-paste mr-1"></i>Dán nhanh</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- TAB 1: SHADOWING (ĐỌC NHẠI & KIỂM TRA PHÁT ÂM)                        -->
+        <!-- ===================================================================== -->
+        <section id="tab-shadowing" class="tab-content space-y-4">
+            <div class="bg-white rounded-2xl border border-teal-100 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base">Luyện đọc nhại (Shadowing)</h3>
+                    <p class="text-xs text-slate-500">Nghe máy đọc mẫu, kiểm tra phát âm từng từ hoặc thu âm giọng thật chuẩn WAV để nghe lại trên iPhone.</p>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button onclick="playFullText()" class="flex-1 sm:flex-initial bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Đọc cả đoạn</span>
+                    </button>
+                    <button onclick="stopSpeech()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm px-3.5 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer">
+                        <i class="fa-solid fa-stop"></i>
+                        <span>Dừng</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="shadowing-list" class="space-y-3"></div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- TAB 2: LUYỆN CHÍNH TẢ (DICTATION)                                     -->
+        <!-- ===================================================================== -->
+        <section id="tab-dictation" class="tab-content hidden space-y-4">
+            <div class="bg-white rounded-2xl border border-teal-100 p-4 sm:p-6 shadow-xs space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Nghe & Chép chính tả (Dictation)</h3>
+                        <p class="text-xs text-slate-500">Văn bản gốc được ẩn. Dùng nút Play/Pause hoặc -3s/+3s để nghe kỹ từng âm tiết.</p>
+                    </div>
+                    <span id="dictation-progress" class="text-xs font-bold bg-sky-100 text-sky-800 px-3 py-1.5 rounded-xl">Câu 1 / 6</span>
+                </div>
+
+                <!-- Trình điều khiển âm thanh Play/Pause, -3s, +3s -->
+                <div class="bg-teal-50/80 p-4 rounded-2xl border border-teal-100 space-y-3">
+                    <div class="flex items-center justify-between text-xs font-semibold text-teal-900">
+                        <span id="dictation-audio-status"><i class="fa-solid fa-headphones mr-1 text-teal-600"></i> Sẵn sàng phát</span>
+                        <span id="dictation-word-progress" class="bg-white/80 px-2.5 py-0.5 rounded-md border border-teal-100">Vị trí: 0%</span>
+                    </div>
+                    <div class="w-full bg-teal-200/60 h-2 rounded-full overflow-hidden">
+                        <div id="dictation-progress-bar" class="bg-teal-600 h-full w-0 transition-all duration-200"></div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1">
+                        <button onclick="prevDictationSentence()" class="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold text-xs sm:text-sm shadow-2xs cursor-pointer">
+                            <i class="fa-solid fa-backward-step"></i> <span class="hidden sm:inline ml-1">Câu trước</span>
+                        </button>
+
+                        <button onclick="seekSmartPlayer('dictation', -3)" class="px-3.5 py-2.5 bg-white border border-teal-200 rounded-xl text-teal-800 hover:bg-teal-100 font-bold text-xs sm:text-sm shadow-2xs flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-rotate-left"></i> <span>-3s</span>
+                        </button>
+
+                        <button onclick="toggleSmartPlayer('dictation')" id="btn-dictation-playpause" class="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 cursor-pointer min-w-[130px] justify-center">
+                            <i class="fa-solid fa-play" id="icon-dictation-playpause"></i>
+                            <span id="label-dictation-playpause">Phát</span>
+                        </button>
+
+                        <button onclick="seekSmartPlayer('dictation', 3)" class="px-3.5 py-2.5 bg-white border border-teal-200 rounded-xl text-teal-800 hover:bg-teal-100 font-bold text-xs sm:text-sm shadow-2xs flex items-center gap-1 cursor-pointer">
+                            <span>+3s</span> <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+
+                        <button onclick="nextDictationSentence()" class="px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold text-xs sm:text-sm shadow-2xs cursor-pointer">
+                            <span class="hidden sm:inline mr-1">Câu sau</span> <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <textarea id="dictation-input" rows="3" placeholder="Gõ lại câu tiếng Đức bạn vừa nghe được vào đây (chú ý viết hoa danh từ)..." class="w-full text-base bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 text-slate-800 outline-none focus:border-teal-500 focus:bg-white transition"></textarea>
+                    
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="checkDictation()" class="flex-1 sm:flex-initial bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-xs transition cursor-pointer">
+                            <i class="fa-solid fa-check-double mr-1.5"></i> Kiểm tra chính tả
+                        </button>
+                        <button onclick="revealDictationAnswer()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm px-4 py-3 rounded-xl transition cursor-pointer">
+                            <i class="fa-solid fa-eye mr-1"></i> Hiện đáp án
+                        </button>
+                    </div>
+                </div>
+
+                <div id="dictation-result" class="hidden space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-1.5">So sánh từng vị trí từ (Không bị dồn chữ khi thiếu):</p>
+                        <div id="dictation-diff-output" class="text-base leading-relaxed flex flex-wrap gap-1.5 items-center"></div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200">
+                        <p class="text-xs font-bold text-teal-700 uppercase mb-1">Câu gốc chuẩn xác:</p>
+                        <p id="dictation-correct-text" class="text-base font-semibold text-slate-800"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- TAB 3: NGHE & ĐIỀN CHỖ TRỐNG (FILL IN THE BLANKS)                     -->
+        <!-- ===================================================================== -->
+        <section id="tab-fillblanks" class="tab-content hidden space-y-4">
+            <div class="bg-white rounded-2xl border border-teal-100 p-4 sm:p-6 shadow-xs space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Nghe & Điền vào chỗ trống (Lückentext)</h3>
+                        <p class="text-xs text-slate-500">Nghe audio, tua lại -3s nếu lỡ nhịp và điền các từ khóa còn thiếu vào ô trống.</p>
+                    </div>
+                </div>
+
+                <div class="bg-sky-50/70 p-4 rounded-2xl border border-sky-100 space-y-3">
+                    <div class="flex items-center justify-between text-xs font-semibold text-sky-900">
+                        <span id="blanks-audio-status"><i class="fa-solid fa-headphones mr-1 text-sky-600"></i> Sẵn sàng phát toàn bài</span>
+                        <span id="blanks-word-progress" class="bg-white/80 px-2.5 py-0.5 rounded-md border border-sky-100">Vị trí: 0%</span>
+                    </div>
+                    <div class="w-full bg-sky-200/60 h-2 rounded-full overflow-hidden">
+                        <div id="blanks-progress-bar" class="bg-sky-600 h-full w-0 transition-all duration-200"></div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1">
+                        <button onclick="seekSmartPlayer('blanks', -3)" class="px-4 py-2.5 bg-white border border-sky-200 rounded-xl text-sky-800 hover:bg-sky-100 font-bold text-xs sm:text-sm shadow-2xs flex items-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-rotate-left"></i> <span>Lùi -3s</span>
+                        </button>
+
+                        <button onclick="toggleSmartPlayer('blanks')" id="btn-blanks-playpause" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-sm shadow-sm flex items-center gap-2 cursor-pointer min-w-[140px] justify-center">
+                            <i class="fa-solid fa-play" id="icon-blanks-playpause"></i>
+                            <span id="label-blanks-playpause">Phát audio</span>
+                        </button>
+
+                        <button onclick="seekSmartPlayer('blanks', 3)" class="px-4 py-2.5 bg-white border border-sky-200 rounded-xl text-sky-800 hover:bg-sky-100 font-bold text-xs sm:text-sm shadow-2xs flex items-center gap-1.5 cursor-pointer">
+                            <span>Tiến +3s</span> <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+
+                        <button onclick="stopSmartPlayer('blanks')" class="px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-xs sm:text-sm shadow-2xs cursor-pointer" title="Đặt lại từ đầu">
+                            <i class="fa-solid fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="blanks-container" class="text-base sm:text-lg leading-loose text-slate-800 bg-slate-50/60 p-4 sm:p-5 rounded-2xl border border-slate-200"></div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <button onclick="gradeBlanks()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-xs transition cursor-pointer">
+                            <i class="fa-solid fa-award mr-1.5"></i> Chấm điểm
+                        </button>
+                        <button onclick="generateBlanksExercise()" class="bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold text-sm px-4 py-3 rounded-xl border border-teal-200 transition cursor-pointer">
+                            <i class="fa-solid fa-rotate mr-1.5"></i> Đổi chỗ trống khác
+                        </button>
+                    </div>
+                    <div id="blanks-score-badge" class="hidden text-sm font-bold px-4 py-2 rounded-xl bg-emerald-100 text-emerald-800">
+                        Kết quả: 0/0
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- TAB 4: NÓI CHUYỆN VỚI AI THEO CHỦ ĐỀ                                  -->
+        <!-- ===================================================================== -->
+        <section id="tab-aichat" class="tab-content hidden flex-1 flex flex-col gap-3">
+            <div class="bg-white rounded-2xl border border-teal-100 p-3.5 shadow-xs space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 flex-1">
+                        <span class="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-1.5 rounded-lg shrink-0">Chủ đề:</span>
+                        <select id="chat-topic-select" onchange="handleChatTopicChange()" class="flex-1 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold text-slate-700 outline-none focus:border-teal-500">
+                            <option value="Đời sống hàng ngày & Sở thích">💬 Đời sống hàng ngày & Sở thích (A2)</option>
+                            <option value="Hỏi thăm bệnh nhân buổi sáng">🏥 Điều dưỡng: Hỏi thăm bệnh nhân buổi sáng</option>
+                            <option value="Đo huyết áp & Phát thuốc">🩺 Điều dưỡng: Đo huyết áp & Phát thuốc</option>
+                            <option value="Giao tiếp với đồng nghiệp tại bệnh viện">👩‍⚕️ Điều dưỡng: Giao tiếp đồng nghiệp & Bàn giao ca</option>
+                            <option value="Phỏng vấn xin việc điều dưỡng tại Đức">🇩🇪 Phỏng vấn xin việc / Học nghề tại Đức</option>
+                            <option value="Đi mua sắm ở siêu thị">🛒 Giao tiếp thực tế: Đi siêu thị</option>
+                            <option value="custom">✏️ Tự nhập chủ đề hội thoại khác...</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="toggleChunksDrawer()" class="flex-1 sm:flex-initial bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer">
+                            <i class="fa-solid fa-book-medical"></i>
+                            <span>Cụm từ gợi ý (Chunks)</span>
+                        </button>
+                        <label class="flex items-center gap-2 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-xl cursor-pointer select-none">
+                            <span class="text-xs font-bold text-teal-800">Gợi ý trả lời</span>
+                            <div class="relative inline-block w-9 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" id="toggle-ai-hints" checked onchange="toggleAIHintsVisibility(this.checked)" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-2 border-slate-300 appearance-none cursor-pointer transition-all duration-200 top-0.5 left-0.5 checked:left-3.5"/>
+                                <span class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-200"></span>
+                            </div>
+                        </label>
+                        <button onclick="resetChatSession()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl transition cursor-pointer" title="Bắt đầu cuộc hội thoại mới">
+                            <i class="fa-solid fa-rotate-right"></i> Mới
+                        </button>
+                    </div>
+                </div>
+
+                <div id="custom-chat-topic-box" class="hidden flex gap-2">
+                    <input type="text" id="custom-chat-topic-input" placeholder="Nhập tình huống bạn muốn luyện (VD: Hỏi đường ra ga tàu)..." class="flex-1 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-teal-500">
+                    <button onclick="resetChatSession()" class="bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer">Áp dụng</button>
+                </div>
+
+                <div id="chunks-drawer" class="hidden bg-amber-50/60 border border-amber-200/80 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-900"><i class="fa-solid fa-lightbulb mr-1 text-amber-500"></i> Bấm vào cụm từ để chèn nhanh hoặc nghe mẫu:</span>
+                        <button onclick="toggleChunksDrawer()" class="text-xs text-slate-500 hover:text-slate-800 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs" id="chunks-grid"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1">
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-teal-100 shadow-xs flex flex-col h-[52vh] sm:h-[58vh]">
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+
+                    <div class="p-3 bg-slate-50 border-t border-slate-200 rounded-b-2xl space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <button id="btn-mic-toggle" onclick="toggleChatRecording()" class="flex-1 bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition cursor-pointer select-none">
+                                <i class="fa-solid fa-microphone text-base" id="mic-icon"></i>
+                                <span id="mic-btn-label">Bấm để nói tiếng Đức (Không giới hạn thời gian)</span>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="chat-text-input" onkeypress="if(event.key==='Enter') sendChatMessage()" placeholder="Chữ nhận diện từ giọng nói hiện ở đây (bạn có thể sửa lại trước khi gửi)..." class="flex-1 text-sm bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-800 outline-none focus:border-teal-500">
+                            <button onclick="sendChatMessage()" id="btn-send-chat" class="bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-2xs flex items-center gap-1.5 shrink-0 transition cursor-pointer">
+                                <span>Gửi</span>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-teal-100 shadow-xs p-4 flex flex-col justify-between h-auto lg:h-[58vh] overflow-y-auto">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-spell-check"></i>
+                            </span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">Sửa lỗi & Cách nói tự nhiên</h4>
+                                <p class="text-[11px] text-slate-500">Phân tích tự động sau mỗi câu bạn nói</p>
+                            </div>
+                        </div>
+
+                        <div id="grammar-feedback-panel" class="space-y-3 text-sm">
+                            <div class="bg-slate-50 rounded-xl p-3.5 text-xs text-slate-500 leading-relaxed border border-slate-100">
+                                <p class="font-semibold text-slate-700 mb-1">💡 Cách luyện phản xạ hiệu quả:</p>
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li>Bấm nút <strong>Bắt đầu nói</strong>, bình tĩnh suy nghĩ từ vựng rồi nói trọn câu.</li>
+                                    <li>Nếu máy nghe nhầm từ nào, bạn có thể sửa trực tiếp trên ô chữ rồi mới bấm <strong>Gửi</strong>.</li>
+                                    <li>Ngay sau khi gửi, phần sửa ngữ pháp chi tiết bằng tiếng Việt sẽ hiện ở đây!</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex items-center justify-between">
+                        <span>Trình độ mục tiêu: A2 – B1</span>
+                        <span class="text-teal-600 font-semibold">Pflege & Alltag</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION BAR (MOBILE) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-teal-100 flex justify-around items-center py-1.5 px-1 z-30 shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
+        <button onclick="switchTab('shadowing')" data-tab="shadowing" class="mobile-nav-btn flex-1 flex flex-col items-center py-1.5 rounded-xl text-teal-600 font-bold">
+            <i class="fa-solid fa-headphones-simple text-base mb-0.5"></i>
+            <span class="text-[10px]">Shadowing</span>
+        </button>
+        <button onclick="switchTab('dictation')" data-tab="dictation" class="mobile-nav-btn flex-1 flex flex-col items-center py-1.5 rounded-xl text-slate-500 font-medium">
+            <i class="fa-solid fa-keyboard text-base mb-0.5"></i>
+            <span class="text-[10px]">Chính tả</span>
+        </button>
+        <button onclick="switchTab('fillblanks')" data-tab="fillblanks" class="mobile-nav-btn flex-1 flex flex-col items-center py-1.5 rounded-xl text-slate-500 font-medium">
+            <i class="fa-solid fa-pen-to-square text-base mb-0.5"></i>
+            <span class="text-[10px]">Điền từ</span>
+        </button>
+        <button onclick="switchTab('aichat')" data-tab="aichat" class="mobile-nav-btn flex-1 flex flex-col items-center py-1.5 rounded-xl text-slate-500 font-medium">
+            <i class="fa-solid fa-comments text-base mb-0.5"></i>
+            <span class="text-[10px]">Chat AI</span>
+        </button>
+    </nav>
+
+    <script>
+        // =========================================================================
+        // 1. DỮ LIỆU MẪU & CẤU HÌNH HỆ THỐNG
+        // =========================================================================
+        const PRESET_TEXTS = {
+            hobby: "In meiner Freizeit mache ich sehr gerne Sport. Jeden Abend gehe ich nach dem Lernen für dreißig Minuten joggen, weil ich fit und gesund bleiben möchte. Außerdem höre ich oft deutsche Podcasts oder schaue Filme mit Untertiteln, um mein Deutsch zu verbessern. Am Wochenende treffe ich mich manchmal mit meinen Freunden im Café. Wir reden über unseren Alltag und trinken zusammen Kaffee. Das macht mir immer viel Spaß und hilft mir beim Entspannen.",
+            patient_greeting: "Guten Morgen, Herr Müller! Ich bin Ihr Pfleger heute. Haben Sie gut geschlafen? Wie fühlen Sie sich heute Morgen? Haben Sie irgendwo Schmerzen oder ist Ihnen schwindelig? Ich bringe Ihnen jetzt gleich Ihr Frühstück und Ihre Tabletten. Wenn Sie Hilfe beim Aufstehen brauchen, sagen Sie mir bitte einfach Bescheid.",
+            vital_signs: "Entschuldigung, Frau Weber, ich möchte jetzt Ihren Blutdruck und Ihre Temperatur messen. Bitte machen Sie Ihren linken Arm frei und legen Sie ihn ruhig auf das Bett. Der Blutdruck ist heute ganz normal, einhundertzwanzig zu achtzig. Jetzt messe ich noch kurz Fieber im Ohr. Alles ist in Ordnung, Sie haben kein Fieber."
+        };
+
+        const CHUNKS_DATA = [
+            { de: "Ich möchte als Pflegekraft arbeiten.", vi: "Tôi muốn làm điều dưỡng." },
+            { de: "Haben Sie irgendwo Schmerzen?", vi: "Bác có bị đau ở đâu không?" },
+            { de: "Ich messe jetzt Ihren Blutdruck.", vi: "Bây giờ tôi sẽ đo huyết áp cho bác." },
+            { de: "Einen Moment bitte, ich helfe Ihnen.", vi: "Xin chờ một chút, tôi sẽ giúp bác." },
+            { de: "Wie fühlen Sie sich heute?", vi: "Hôm nay bác cảm thấy thế nào?" },
+            { de: "Ich lerne seit vier Monaten Deutsch.", vi: "Tôi học tiếng Đức được 4 tháng rồi." },
+            { de: "Können Sie das bitte wiederholen?", vi: "Bạn có thể nhắc lại câu đó được không?" },
+            { de: "Das macht mir sehr viel Spaß.", vi: "Điều đó mang lại cho tôi rất nhiều niềm vui." },
+            { de: "Alles wird gut, machen Sie sich keine Sorgen.", vi: "Mọi chuyện sẽ ổn thôi, bác đừng lo lắng." }
+        ];
+
+        let state = {
+            currentTab: 'shadowing',
+            sourceText: PRESET_TEXTS.hobby,
+            sentences: [],
+            speechRate: 0.85,
+            selectedVoiceURI: '',
+            voices: [],
+            // Shadowing state (tách biệt hoàn toàn STT và WAV AudioContext Recorder cho iOS)
+            userAudioBlobs: {},
+            sttSentenceIndex: null,
+            activeRecognition: null,
+            liveShadowTranscript: '',
+            wavRecordingIndex: null,
+            wavAudioCtx: null,
+            wavStream: null,
+            wavProcessor: null,
+            wavBuffers: [],
+            wavSampleRate: 44100,
+            // Dictation state
+            dictationIndex: 0,
+            // Fill in blanks state
+            blanksData: [],
+            // AI Chat state
+            chatHistory: [],
+            isChatRecording: false,
+            showAIHints: true
+        };
+
+        const smartPlayers = {
+            dictation: { words: [], currentWordIdx: 0, isPlaying: false, isPaused: false, sessionId: 0 },
+            blanks: { words: [], currentWordIdx: 0, isPlaying: false, isPaused: false, sessionId: 0 }
+        };
+
+        const apiKey = "";
+
+        // =========================================================================
+        // 2. KHỞI TẠO & THÔNG BÁO TOAST
+        // =========================================================================
+        window.onload = function() {
+            initVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = initVoices;
+            }
+            document.getElementById('source-textarea').value = state.sourceText;
+            handleSourceTextChange();
+            renderChunks();
+            resetChatSession();
+        };
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                info: 'bg-slate-800 text-white',
+                success: 'bg-teal-700 text-white',
+                warning: 'bg-amber-600 text-white',
+                error: 'bg-rose-600 text-white'
+            };
+            toast.className = `${colors[type] || colors.info} px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium flex items-center justify-between gap-2 pointer-events-auto transition-all duration-300`;
+            toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="opacity-75 hover:opacity-100 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>`;
+            container.appendChild(toast);
+            setTimeout(() => { if (toast.parentElement) toast.remove(); }, 4500);
+        }
+
+        // =========================================================================
+        // 3. CHUYỂN TAB & RESPONSIVE
+        // =========================================================================
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+            stopSpeech();
+            stopSmartPlayer('dictation');
+            stopSmartPlayer('blanks');
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            const sourceSection = document.getElementById('source-manager-section');
+            if (tabId === 'aichat') sourceSection.classList.add('hidden');
+            else sourceSection.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.tab === tabId) {
+                    btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-teal-50 text-teal-700 shadow-2xs';
+                } else {
+                    btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all';
+                }
+            });
+
+            document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+                if (btn.dataset.tab === tabId) {
+                    btn.className = 'mobile-nav-btn flex-1 flex flex-col items-center py-1.5 rounded-xl text-teal-600 font-bold bg-teal-50/70';
+                } else {
+                    btn.className = 'mobile-nav-btn flex-1 flex flex-col items-center py-1.5 rounded-xl text-slate-500 font-medium';
+                }
+            });
+
+            if (tabId === 'fillblanks' && state.blanksData.length === 0) {
+                generateBlanksExercise();
+            }
+        }
+
+        function toggleMobileAudioSettings() {
+            document.getElementById('mobile-audio-drawer').classList.toggle('hidden');
+        }
+
+        function toggleSourceEditor() {
+            const body = document.getElementById('source-editor-body');
+            const btn = document.getElementById('toggle-editor-btn');
+            body.classList.toggle('hidden');
+            btn.innerHTML = body.classList.contains('hidden')
+                ? '<i class="fa-solid fa-chevron-down mr-1"></i> Mở rộng'
+                : '<i class="fa-solid fa-chevron-up mr-1"></i> Thu gọn';
+        }
+
+        // =========================================================================
+        // 4. WEB SPEECH API (TTS & SMART PLAYER)
+        // =========================================================================
+        function initVoices() {
+            const allVoices = speechSynthesis.getVoices();
+            const germanVoices = allVoices.filter(v => v.lang.toLowerCase().startsWith('de'));
+            state.voices = germanVoices.length > 0 ? germanVoices : allVoices;
+
+            const desktopSelect = document.getElementById('voice-select-desktop');
+            const mobileSelect = document.getElementById('voice-select-mobile');
+
+            const buildOptions = (selectEl) => {
+                selectEl.innerHTML = '';
+                if (state.voices.length === 0) {
+                    selectEl.innerHTML = '<option value="">Giọng mặc định trình duyệt</option>';
+                    return;
+                }
+                state.voices.forEach((voice, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = voice.voiceURI;
+                    opt.textContent = `${voice.name} (${voice.lang})`;
+                    if (!state.selectedVoiceURI && (voice.name.includes('Natural') || voice.name.includes('Google') || idx === 0)) {
+                        state.selectedVoiceURI = voice.voiceURI;
+                    }
+                    if (voice.voiceURI === state.selectedVoiceURI) opt.selected = true;
+                    selectEl.appendChild(opt);
+                });
+            };
+
+            buildOptions(desktopSelect);
+            buildOptions(mobileSelect);
+        }
+
+        function syncVoiceSelect(uri) {
+            state.selectedVoiceURI = uri;
+            document.getElementById('voice-select-desktop').value = uri;
+            document.getElementById('voice-select-mobile').value = uri;
+        }
+
+        function updateSpeechRate(val) {
+            state.speechRate = parseFloat(val);
+            document.getElementById('speech-rate-desktop').value = val;
+            document.getElementById('speech-rate-mobile').value = val;
+            document.getElementById('speed-display-desktop').textContent = `${val}x`;
+            document.getElementById('speed-display-mobile').textContent = `${val}x`;
+            document.getElementById('speed-drawer-val').textContent = `${val}x`;
+        }
+
+        function speakGerman(text, onStartCallback = null, onEndCallback = null) {
+            if (!('speechSynthesis' in window)) {
+                showToast('Trình duyệt của bạn không hỗ trợ đọc văn bản tự động.', 'error');
+                return;
+            }
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            utterance.rate = state.speechRate;
+
+            if (state.selectedVoiceURI) {
+                const chosenVoice = state.voices.find(v => v.voiceURI === state.selectedVoiceURI);
+                if (chosenVoice) utterance.voice = chosenVoice;
+            }
+
+            utterance.onstart = () => { if (onStartCallback) onStartCallback(); };
+            utterance.onend = () => { if (onEndCallback) onEndCallback(); };
+            utterance.onerror = () => { if (onEndCallback) onEndCallback(); };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.querySelectorAll('.sentence-card').forEach(card => {
+                card.classList.remove('ring-2', 'ring-teal-500', 'bg-teal-50/60');
+            });
+        }
+
+        function getPlayerText(mode) {
+            if (mode === 'dictation') return state.sentences[state.dictationIndex] || '';
+            return state.sourceText || '';
+        }
+
+        function updateSmartPlayerUI(mode) {
+            const p = smartPlayers[mode];
+            const total = p.words.length;
+            const pct = total > 0 ? Math.min(100, Math.round((p.currentWordIdx / total) * 100)) : 0;
+
+            const iconEl = document.getElementById(`icon-${mode}-playpause`);
+            const labelEl = document.getElementById(`label-${mode}-playpause`);
+            const statusEl = document.getElementById(`dictation-audio-status`);
+            const blanksStatusEl = document.getElementById(`blanks-audio-status`);
+            const progressTextEl = document.getElementById(`${mode}-word-progress`);
+            const barEl = document.getElementById(`${mode}-progress-bar`);
+
+            if (progressTextEl) progressTextEl.textContent = `Vị trí: ${pct}%`;
+            if (barEl) barEl.style.width = `${pct}%`;
+
+            if (p.isPlaying && !p.isPaused) {
+                if (iconEl) iconEl.className = 'fa-solid fa-pause';
+                if (labelEl) labelEl.textContent = 'Tạm dừng';
+                if (mode === 'dictation' && statusEl) statusEl.innerHTML = '<i class="fa-solid fa-volume-high fa-beat-fade mr-1 text-teal-600"></i> Đang phát...';
+                if (mode === 'blanks' && blanksStatusEl) blanksStatusEl.innerHTML = '<i class="fa-solid fa-volume-high fa-beat-fade mr-1 text-sky-600"></i> Đang phát...';
+            } else if (p.isPaused) {
+                if (iconEl) iconEl.className = 'fa-solid fa-play';
+                if (labelEl) labelEl.textContent = 'Tiếp tục';
+                if (mode === 'dictation' && statusEl) statusEl.innerHTML = '<i class="fa-solid fa-circle-pause mr-1 text-amber-600"></i> Đã tạm dừng';
+                if (mode === 'blanks' && blanksStatusEl) blanksStatusEl.innerHTML = '<i class="fa-solid fa-circle-pause mr-1 text-amber-600"></i> Đã tạm dừng';
+            } else {
+                if (iconEl) iconEl.className = 'fa-solid fa-play';
+                if (labelEl) labelEl.textContent = mode === 'dictation' ? 'Phát' : 'Phát audio';
+                if (mode === 'dictation' && statusEl) statusEl.innerHTML = '<i class="fa-solid fa-headphones mr-1 text-teal-600"></i> Sẵn sàng phát';
+                if (mode === 'blanks' && blanksStatusEl) blanksStatusEl.innerHTML = '<i class="fa-solid fa-headphones mr-1 text-sky-600"></i> Sẵn sàng phát toàn bài';
+            }
+        }
+
+        function toggleSmartPlayer(mode) {
+            const text = getPlayerText(mode).trim();
+            if (!text) {
+                showToast('Chưa có văn bản để phát âm thanh.', 'warning');
+                return;
+            }
+
+            const p = smartPlayers[mode];
+            const words = text.split(/\s+/);
+
+            if (p.isPlaying && !p.isPaused) {
+                p.isPaused = true;
+                p.sessionId++;
+                window.speechSynthesis.cancel();
+                updateSmartPlayerUI(mode);
+                return;
+            }
+
+            if (!p.isPlaying || p.words.join(' ') !== words.join(' ')) {
+                p.words = words;
+                if (p.currentWordIdx >= p.words.length) p.currentWordIdx = 0;
+            }
+
+            p.isPlaying = true;
+            p.isPaused = false;
+            updateSmartPlayerUI(mode);
+            runSmartPlayerFromWord(mode, p.currentWordIdx);
+        }
+
+        function runSmartPlayerFromWord(mode, startIdx) {
+            const p = smartPlayers[mode];
+            if (!p.words || p.words.length === 0) return;
+
+            p.currentWordIdx = Math.max(0, Math.min(startIdx, p.words.length - 1));
+            const currentSession = ++p.sessionId;
+            window.speechSynthesis.cancel();
+
+            const remainingWords = p.words.slice(p.currentWordIdx);
+            const sliceText = remainingWords.join(' ');
+
+            const utterance = new SpeechSynthesisUtterance(sliceText);
+            utterance.lang = 'de-DE';
+            utterance.rate = state.speechRate;
+
+            if (state.selectedVoiceURI) {
+                const chosenVoice = state.voices.find(v => v.voiceURI === state.selectedVoiceURI);
+                if (chosenVoice) utterance.voice = chosenVoice;
+            }
+
+            utterance.onboundary = (event) => {
+                if (p.sessionId !== currentSession) return;
+                if (event.name === 'word') {
+                    const spokenSub = sliceText.substring(0, event.charIndex).trim();
+                    const offsetWords = spokenSub ? spokenSub.split(/\s+/).length : 0;
+                    p.currentWordIdx = Math.min(p.words.length - 1, startIdx + offsetWords);
+                    updateSmartPlayerUI(mode);
+                }
+            };
+
+            utterance.onend = () => {
+                if (p.sessionId !== currentSession) return;
+                p.isPlaying = false;
+                p.isPaused = false;
+                p.currentWordIdx = 0;
+                updateSmartPlayerUI(mode);
+            };
+
+            utterance.onerror = () => {
+                if (p.sessionId !== currentSession) return;
+                p.isPlaying = false;
+                p.isPaused = false;
+                updateSmartPlayerUI(mode);
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function seekSmartPlayer(mode, deltaSeconds) {
+            const text = getPlayerText(mode).trim();
+            if (!text) return;
+
+            const p = smartPlayers[mode];
+            if (p.words.length === 0 || p.words.join(' ') !== text.split(/\s+/).join(' ')) {
+                p.words = text.split(/\s+/);
+                p.currentWordIdx = 0;
+            }
+
+            const wordsPerSecond = 2.3 * state.speechRate;
+            const wordShift = Math.round(deltaSeconds * wordsPerSecond);
+            const targetIdx = Math.max(0, Math.min(p.words.length - 1, p.currentWordIdx + wordShift));
+
+            p.currentWordIdx = targetIdx;
+            p.isPlaying = true;
+            p.isPaused = false;
+            updateSmartPlayerUI(mode);
+            runSmartPlayerFromWord(mode, targetIdx);
+        }
+
+        function stopSmartPlayer(mode) {
+            const p = smartPlayers[mode];
+            p.sessionId++;
+            p.isPlaying = false;
+            p.isPaused = false;
+            p.currentWordIdx = 0;
+            window.speechSynthesis.cancel();
+            updateSmartPlayerUI(mode);
+        }
+
+        // =========================================================================
+        // 5. QUẢN LÝ VĂN BẢN ĐẦU VÀO
+        // =========================================================================
+        function loadPresetText(key) {
+            if (key === 'custom') {
+                document.getElementById('source-textarea').focus();
+                return;
+            }
+            if (PRESET_TEXTS[key]) {
+                document.getElementById('source-textarea').value = PRESET_TEXTS[key];
+                handleSourceTextChange();
+                showToast('Đã nạp bài luyện tập mẫu!', 'success');
+            }
+        }
+
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById('source-textarea').value = text;
+                    document.getElementById('preset-select').value = 'custom';
+                    handleSourceTextChange();
+                    showToast('Đã dán văn bản từ bộ nhớ tạm!', 'success');
+                }
+            } catch (err) {
+                showToast('Hãy bấm vào ô chữ và nhấn Ctrl+V (hoặc Dán) nhé!', 'info');
+            }
+        }
+
+        function clearSourceText() {
+            document.getElementById('source-textarea').value = '';
+            document.getElementById('preset-select').value = 'custom';
+            handleSourceTextChange();
+        }
+
+        function handleSourceTextChange() {
+            const raw = document.getElementById('source-textarea').value.trim();
+            state.sourceText = raw;
+
+            const splitSentences = raw.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [];
+            state.sentences = splitSentences.map(s => s.trim()).filter(s => s.length > 0);
+            state.userAudioBlobs = {};
+
+            document.getElementById('sentence-count-badge').textContent = `${state.sentences.length} câu được tách tự động`;
+
+            stopSmartPlayer('dictation');
+            stopSmartPlayer('blanks');
+            renderShadowingList();
+            state.dictationIndex = 0;
+            updateDictationUI();
+            generateBlanksExercise();
+        }
+
+        async function generateTextWithAI() {
+            const topicInput = document.getElementById('ai-topic-input').value.trim();
+            const topic = topicInput || 'Chăm sóc bệnh nhân và giao tiếp hàng ngày ở Đức';
+            const btn = document.getElementById('btn-ai-gen');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Đang tạo...</span>';
+
+            const prompt = `Viết một đoạn văn hoặc đoạn hội thoại ngắn bằng tiếng Đức trình độ A2 (khoảng 5 đến 7 câu, câu văn rõ ràng, tự nhiên, dùng từ vựng thực tế) về chủ đề: "${topic}". Chỉ trả về nội dung tiếng Đức thuần túy, không kèm tiêu đề, không kèm giải thích tiếng Việt hay phiên âm.`;
+
+            try {
+                const generatedText = await callGeminiText(prompt);
+                if (generatedText) {
+                    document.getElementById('source-textarea').value = generatedText.trim();
+                    document.getElementById('preset-select').value = 'custom';
+                    handleSourceTextChange();
+                    showToast('AI đã tạo xong bài luyện tập mới!', 'success');
+                }
+            } catch (error) {
+                showToast('Không thể kết nối AI lúc này, vui lòng thử lại sau.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> <span>AI tạo bài</span>';
+            }
+        }
+
+        // =========================================================================
+        // 6. TAB 1: SHADOWING (TÁCH BIỆT STT & THU ÂM WAV CHUẨN SAFARI iOS)
+        // =========================================================================
+        function renderShadowingList() {
+            const container = document.getElementById('shadowing-list');
+            container.innerHTML = '';
+
+            if (state.sentences.length === 0) {
+                container.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center text-slate-400 text-sm border border-dashed border-slate-200">Hãy nhập hoặc chọn một đoạn văn bản tiếng Đức ở phía trên để bắt đầu luyện Shadowing.</div>`;
+                return;
+            }
+
+            state.sentences.forEach((sentence, index) => {
+                const hasRecording = Boolean(state.userAudioBlobs[index]);
+                const card = document.createElement('div');
+                card.id = `shadow-card-${index}`;
+                card.className = 'sentence-card bg-white rounded-2xl border border-teal-100 p-4 shadow-2xs transition-all space-y-3';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-start gap-2.5">
+                            <span class="w-6 h-6 rounded-full bg-teal-100 text-teal-800 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">${index + 1}</span>
+                            <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed">${sentence}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <button onclick="playSingleSentence(${index})" class="bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
+                                <i class="fa-solid fa-volume-high"></i> Nghe mẫu
+                            </button>
+                            <button onclick="loopSingleSentence(${index})" class="bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold text-xs sm:text-sm px-2.5 py-2 rounded-xl flex items-center gap-1 transition cursor-pointer" title="Đọc lặp lại 2 lần liên tiếp">
+                                <i class="fa-solid fa-repeat"></i> 2x
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="toggleShadowingSTT(${index})" id="shadow-stt-btn-${index}" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
+                                <i class="fa-solid fa-spell-check"></i> <span>Chấm phát âm</span>
+                            </button>
+                            <button onclick="toggleShadowingWav(${index})" id="shadow-wav-btn-${index}" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
+                                <i class="fa-solid fa-microphone"></i> <span>Thu giọng tôi</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="shadow-audio-box-${index}" class="${hasRecording ? 'block' : 'hidden'} bg-indigo-50/60 border border-indigo-100 rounded-xl p-2.5 space-y-1">
+                        <p class="text-[11px] font-bold text-indigo-800"><i class="fa-solid fa-headphones mr-1"></i> Bản thu âm giọng của bạn (bấm Play ▶ để nghe lại):</p>
+                        <audio id="shadow-audio-player-${index}" controls playsinline class="w-full h-10 rounded-lg" src="${hasRecording ? state.userAudioBlobs[index] : ''}"></audio>
+                    </div>
+                    <div id="shadow-feedback-${index}" class="hidden text-xs sm:text-sm p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function playFullText() {
+            if (state.sentences.length === 0) return;
+            let currentIdx = 0;
+            function playNext() {
+                if (currentIdx >= state.sentences.length) {
+                    document.querySelectorAll('.sentence-card').forEach(c => c.classList.remove('ring-2', 'ring-teal-500', 'bg-teal-50/60'));
+                    return;
+                }
+                highlightSentenceCard(currentIdx);
+                speakGerman(state.sentences[currentIdx], null, () => {
+                    currentIdx++;
+                    playNext();
+                });
+            }
+            playNext();
+        }
+
+        function playSingleSentence(index) {
+            highlightSentenceCard(index);
+            speakGerman(state.sentences[index], null, () => {
+                document.getElementById(`shadow-card-${index}`)?.classList.remove('ring-2', 'ring-teal-500', 'bg-teal-50/60');
+            });
+        }
+
+        function loopSingleSentence(index) {
+            highlightSentenceCard(index);
+            const text = state.sentences[index];
+            speakGerman(text, null, () => {
+                setTimeout(() => {
+                    speakGerman(text, null, () => {
+                        document.getElementById(`shadow-card-${index}`)?.classList.remove('ring-2', 'ring-teal-500', 'bg-teal-50/60');
+                    });
+                }, 400);
+            });
+        }
+
+        function highlightSentenceCard(index) {
+            document.querySelectorAll('.sentence-card').forEach(c => c.classList.remove('ring-2', 'ring-teal-500', 'bg-teal-50/60'));
+            const card = document.getElementById(`shadow-card-${index}`);
+            if (card) {
+                card.classList.add('ring-2', 'ring-teal-500', 'bg-teal-50/60');
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // --- CHẾ ĐỘ A: CHẤM PHÁT ÂM BẰNG SPEECH RECOGNITION ---
+        async function toggleShadowingSTT(index) {
+            if (state.wavRecordingIndex !== null) {
+                await stopActiveWavRecording();
+            }
+            if (state.sttSentenceIndex === index) {
+                stopActiveSTT();
+                return;
+            }
+            if (state.sttSentenceIndex !== null) {
+                stopActiveSTT();
+                await new Promise(r => setTimeout(r, 200));
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showToast('Trình duyệt không hỗ trợ chấm phát âm tự động.', 'warning');
+                return;
+            }
+
+            state.sttSentenceIndex = index;
+            state.liveShadowTranscript = '';
+
+            const btn = document.getElementById(`shadow-stt-btn-${index}`);
+            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
+
+            btn.classList.add('recording-active');
+            btn.innerHTML = '<i class="fa-solid fa-stop-circle"></i> <span>Dừng chấm</span>';
+
+            feedbackBox.classList.remove('hidden');
+            feedbackBox.innerHTML = `<div class="text-rose-600 font-semibold flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang nghe bạn đọc để chấm từng từ...</div>`;
+
+            try {
+                if (state.activeRecognition) {
+                    try { state.activeRecognition.abort(); } catch (e) {}
+                }
+                const rec = new SpeechRecognition();
+                rec.lang = 'de-DE';
+                rec.continuous = true;
+                rec.interimResults = true;
+
+                rec.onresult = (event) => {
+                    let finalStr = '';
+                    let interimStr = '';
+                    for (let i = 0; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) finalStr += event.results[i][0].transcript + ' ';
+                        else interimStr += event.results[i][0].transcript;
+                    }
+                    state.liveShadowTranscript = (finalStr + interimStr).trim();
+                    if (state.sttSentenceIndex === index && state.liveShadowTranscript) {
+                        feedbackBox.innerHTML = `<div class="text-slate-600">Đang nhận diện: <span class="font-bold text-slate-900">"${state.liveShadowTranscript}"</span></div>`;
+                    }
+                };
+
+                rec.onerror = (e) => {
+                    if (e.error !== 'aborted' && e.error !== 'no-speech') {
+                        showToast('Lỗi nhận diện giọng nói: ' + e.error, 'warning');
+                    }
+                };
+
+                rec.onend = () => {
+                    if (state.sttSentenceIndex === index) finalizeShadowingSTT(index);
+                };
+
+                state.activeRecognition = rec;
+                rec.start();
+            } catch (err) {
+                stopActiveSTT();
+            }
+        }
+
+        function stopActiveSTT() {
+            const idx = state.sttSentenceIndex;
+            if (idx === null) return;
+            if (state.activeRecognition) {
+                try { state.activeRecognition.stop(); } catch (e) {}
+            }
+            finalizeShadowingSTT(idx);
+        }
+
+        function finalizeShadowingSTT(index) {
+            if (state.sttSentenceIndex !== index) return;
+            state.sttSentenceIndex = null;
+
+            const btn = document.getElementById(`shadow-stt-btn-${index}`);
+            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
+            if (!btn || !feedbackBox) return;
+
+            btn.classList.remove('recording-active');
+            btn.innerHTML = '<i class="fa-solid fa-spell-check"></i> <span>Chấm phát âm</span>';
+
+            const spokenText = state.liveShadowTranscript.trim();
+            const targetText = state.sentences[index] || '';
+
+            if (!spokenText) {
+                feedbackBox.innerHTML = `<div class="text-amber-700 font-medium">Chưa nghe rõ tiếng bạn đọc. Hãy bấm <strong>Chấm phát âm</strong> và đọc lại gần Micro nhé!</div>`;
+                return;
+            }
+
+            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
+            const targetWords = cleanWords(targetText);
+            const spokenWords = cleanWords(spokenText);
+
+            let matched = 0;
+            const wordChips = targetWords.map(w => {
+                const hit = spokenWords.includes(w);
+                if (hit) matched++;
+                return `<span class="px-2 py-0.5 rounded-md font-semibold text-xs ${hit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">${w}</span>`;
+            }).join(' ');
+
+            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
+            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
+
+            feedbackBox.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
+                    <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
+                </div>
+                <p class="text-slate-900 font-semibold">"${spokenText}"</p>
+                <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
+                    <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
+                </div>
+            `;
+        }
+
+        // --- CHẾ ĐỘ B: THU ÂM GIỌNG THẬT CHUẨN WAV QUA AUDIOCONTEXT (TƯƠNG THÍCH 100% iOS SAFARI) ---
+        async function toggleShadowingWav(index) {
+            if (state.sttSentenceIndex !== null) {
+                stopActiveSTT();
+                await new Promise(r => setTimeout(r, 200));
+            }
+            if (state.wavRecordingIndex === index) {
+                await stopActiveWavRecording();
+                return;
+            }
+            if (state.wavRecordingIndex !== null) {
+                await stopActiveWavRecording();
+                await new Promise(r => setTimeout(r, 200));
+            }
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToast('Trình duyệt không hỗ trợ truy cập Micro.', 'error');
+                return;
+            }
+
+            try {
+                stopSpeech();
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: { echoCancellation: true, noiseSuppression: true }
+                });
+
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                const audioCtx = new AudioContextClass();
+                if (audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
+                }
+
+                const source = audioCtx.createMediaStreamSource(stream);
+                const processor = audioCtx.createScriptProcessor(4096, 1, 1);
+
+                state.wavRecordingIndex = index;
+                state.wavStream = stream;
+                state.wavAudioCtx = audioCtx;
+                state.wavProcessor = processor;
+                state.wavBuffers = [];
+                state.wavSampleRate = audioCtx.sampleRate || 44100;
+
+                processor.onaudioprocess = (e) => {
+                    if (state.wavRecordingIndex !== index) return;
+                    const inputData = e.inputBuffer.getChannelData(0);
+                    state.wavBuffers.push(new Float32Array(inputData));
+                };
+
+                source.connect(processor);
+                processor.connect(audioCtx.destination);
+
+                const btn = document.getElementById(`shadow-wav-btn-${index}`);
+                btn.classList.add('recording-active');
+                btn.innerHTML = '<i class="fa-solid fa-stop-circle"></i> <span>Dừng thu âm</span>';
+
+                const audioBox = document.getElementById(`shadow-audio-box-${index}`);
+                audioBox.classList.remove('hidden');
+                audioBox.innerHTML = `<p class="text-xs font-bold text-rose-600 flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang ghi âm giọng thật (WAV)... Hãy đọc to câu trên!</p>`;
+            } catch (err) {
+                showToast('Không thể mở Micro trên iPhone. Hãy mở link trực tiếp bằng trình duyệt Safari và cho phép Micro!', 'error');
+            }
+        }
+
+        async function stopActiveWavRecording() {
+            const index = state.wavRecordingIndex;
+            if (index === null) return;
+            state.wavRecordingIndex = null;
+
+            const btn = document.getElementById(`shadow-wav-btn-${index}`);
+            if (btn) {
+                btn.classList.remove('recording-active');
+                btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>Thu lại giọng tôi</span>';
+            }
+
+            try {
+                if (state.wavProcessor) state.wavProcessor.disconnect();
+                if (state.wavStream) state.wavStream.getTracks().forEach(t => t.stop());
+                if (state.wavAudioCtx) await state.wavAudioCtx.close();
+            } catch (e) {}
+
+            const buffers = state.wavBuffers;
+            const sampleRate = state.wavSampleRate;
+            state.wavBuffers = [];
+
+            const audioBox = document.getElementById(`shadow-audio-box-${index}`);
+            if (!buffers || buffers.length === 0) {
+                if (audioBox) {
+                    audioBox.innerHTML = `<p class="text-xs font-semibold text-amber-700">Chưa thu được tín hiệu âm thanh. Nếu bạn mở từ biểu tượng Màn hình chính iPhone, hãy mở trực tiếp trong <strong>Safari</strong> nhé!</p>`;
+                }
+                return;
+            }
+
+            const wavBlob = encodeWAVFromBuffers(buffers, sampleRate);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const dataUrl = reader.result;
+                state.userAudioBlobs[index] = dataUrl;
+                if (audioBox) {
+                    audioBox.classList.remove('hidden');
+                    audioBox.innerHTML = `
+                        <p class="text-[11px] font-bold text-indigo-800"><i class="fa-solid fa-headphones mr-1"></i> Bản thu âm giọng của bạn (bấm Play ▶ để nghe lại):</p>
+                        <audio id="shadow-audio-player-${index}" controls playsinline class="w-full h-10 rounded-lg" src="${dataUrl}"></audio>
+                    `;
+                }
+                showToast('Đã lưu bản thu âm giọng nói của bạn!', 'success');
+            };
+            reader.readAsDataURL(wavBlob);
+        }
+
+        function encodeWAVFromBuffers(buffers, sampleRate) {
+            let totalLength = 0;
+            for (let i = 0; i < buffers.length; i++) totalLength += buffers[i].length;
+
+            const merged = new Float32Array(totalLength);
+            let offset = 0;
+            for (let i = 0; i < buffers.length; i++) {
+                merged.set(buffers[i], offset);
+                offset += buffers[i].length;
+            }
+
+            const buffer = new ArrayBuffer(44 + merged.length * 2);
+            const view = new DataView(buffer);
+
+            const writeStr = (pos, str) => {
+                for (let i = 0; i < str.length; i++) view.setUint8(pos + i, str.charCodeAt(i));
+            };
+
+            writeStr(0, 'RIFF');
+            view.setUint32(4, 36 + merged.length * 2, true);
+            writeStr(8, 'WAVE');
+            writeStr(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeStr(36, 'data');
+            view.setUint32(40, merged.length * 2, true);
+
+            let idx = 44;
+            for (let i = 0; i < merged.length; i++, idx += 2) {
+                const s = Math.max(-1, Math.min(1, merged[i]));
+                view.setInt16(idx, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        // =========================================================================
+        // 7. TAB 2: LUYỆN CHÍNH TẢ (THUẬT TOÁN LCS DIFF CHỐNG DỒN CHỮ)
+        // =========================================================================
+        function updateDictationUI() {
+            stopSmartPlayer('dictation');
+            const total = state.sentences.length;
+            const current = total > 0 ? state.dictationIndex + 1 : 0;
+            document.getElementById('dictation-progress').textContent = `Câu ${current} / ${total}`;
+            document.getElementById('dictation-input').value = '';
+            document.getElementById('dictation-result').classList.add('hidden');
+        }
+
+        function prevDictationSentence() {
+            if (state.dictationIndex > 0) {
+                state.dictationIndex--;
+                updateDictationUI();
+                toggleSmartPlayer('dictation');
+            }
+        }
+
+        function nextDictationSentence() {
+            if (state.dictationIndex < state.sentences.length - 1) {
+                state.dictationIndex++;
+                updateDictationUI();
+                toggleSmartPlayer('dictation');
+            } else {
+                showToast('Bạn đã hoàn thành câu cuối cùng của đoạn văn!', 'success');
+            }
+        }
+
+        function diffWordsLCS(expectedArr, actualArr) {
+            const m = expectedArr.length;
+            const n = actualArr.length;
+            const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+            const stripPunct = (w) => w.replace(/[.,!?;:"„“]/g, '');
+
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    if (stripPunct(expectedArr[i - 1]).toLowerCase() === stripPunct(actualArr[j - 1]).toLowerCase()) {
+                        dp[i][j] = dp[i - 1][j - 1] + 1;
+                    } else {
+                        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    }
+                }
+            }
+
+            const diffResult = [];
+            let i = m, j = n;
+            while (i > 0 || j > 0) {
+                if (i > 0 && j > 0 && stripPunct(expectedArr[i - 1]).toLowerCase() === stripPunct(actualArr[j - 1]).toLowerCase()) {
+                    const isExactCase = stripPunct(expectedArr[i - 1]) === stripPunct(actualArr[j - 1]);
+                    diffResult.unshift({
+                        type: isExactCase ? 'correct' : 'case_error',
+                        word: actualArr[j - 1],
+                        expected: expectedArr[i - 1]
+                    });
+                    i--;
+                    j--;
+                } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+                    diffResult.unshift({ type: 'wrong', word: actualArr[j - 1] });
+                    j--;
+                } else {
+                    diffResult.unshift({ type: 'missing', expected: expectedArr[i - 1] });
+                    i--;
+                }
+            }
+            return diffResult;
+        }
+
+        function checkDictation() {
+            if (state.sentences.length === 0) return;
+            const original = state.sentences[state.dictationIndex];
+            const userTyped = document.getElementById('dictation-input').value.trim();
+
+            if (!userTyped) {
+                showToast('Bạn hãy gõ câu nghe được vào ô trước khi kiểm tra nhé!', 'warning');
+                return;
+            }
+
+            const origWords = original.split(/\s+/).filter(Boolean);
+            const userWords = userTyped.split(/\s+/).filter(Boolean);
+            const diffItems = diffWordsLCS(origWords, userWords);
+
+            const diffOutput = document.getElementById('dictation-diff-output');
+            diffOutput.innerHTML = '';
+
+            diffItems.forEach(item => {
+                const span = document.createElement('span');
+                if (item.type === 'correct') {
+                    span.className = 'px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-semibold text-sm';
+                    span.textContent = item.word;
+                } else if (item.type === 'case_error') {
+                    span.className = 'px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 font-semibold text-sm border border-amber-300';
+                    span.textContent = `${item.word} (viết hoa: ${item.expected})`;
+                } else if (item.type === 'missing') {
+                    span.className = 'px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 font-semibold text-xs border border-dashed border-rose-300';
+                    span.textContent = `[thiếu: ${item.expected}]`;
+                } else {
+                    span.className = 'px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800 font-semibold text-sm line-through';
+                    span.textContent = item.word;
+                }
+                diffOutput.appendChild(span);
+            });
+
+            document.getElementById('dictation-correct-text').textContent = original;
+            document.getElementById('dictation-result').classList.remove('hidden');
+        }
+
+        function revealDictationAnswer() {
+            if (state.sentences.length === 0) return;
+            document.getElementById('dictation-diff-output').innerHTML = '<span class="text-xs text-slate-500 italic">Đã hiển thị đáp án mẫu bên dưới:</span>';
+            document.getElementById('dictation-correct-text').textContent = state.sentences[state.dictationIndex];
+            document.getElementById('dictation-result').classList.remove('hidden');
+        }
+
+        // =========================================================================
+        // 8. TAB 3: NGHE & ĐIỀN CHỖ TRỐNG (FILL IN THE BLANKS)
+        // =========================================================================
+        function generateBlanksExercise() {
+            const container = document.getElementById('blanks-container');
+            const scoreBadge = document.getElementById('blanks-score-badge');
+            scoreBadge.classList.add('hidden');
+            container.innerHTML = '';
+
+            if (!state.sourceText) {
+                container.innerHTML = '<p class="text-sm text-slate-400">Chưa có văn bản để tạo bài tập điền từ.</p>';
+                return;
+            }
+
+            const rawTokens = state.sourceText.split(/\s+/);
+            state.blanksData = rawTokens.map((token, idx) => {
+                const match = token.match(/^([a-zA-ZäöüÄÖÜß]+)([.,!?;:"]*)$/);
+                if (!match) return { raw: token, isBlank: false };
+                const cleanWord = match[1];
+                const punct = match[2] || '';
+                const shouldHide = cleanWord.length >= 3 && (idx % 3 === 1 || Math.random() < 0.25);
+                return { raw: token, cleanWord, punct, isBlank: shouldHide };
+            });
+
+            if (state.blanksData.filter(b => b.isBlank).length < 2 && state.blanksData.length >= 4) {
+                state.blanksData[1].isBlank = true;
+                state.blanksData[3].isBlank = true;
+            }
+
+            state.blanksData.forEach((item, idx) => {
+                if (!item.isBlank) {
+                    const span = document.createElement('span');
+                    span.textContent = item.raw + ' ';
+                    container.appendChild(span);
+                } else {
+                    const wrapper = document.createElement('span');
+                    wrapper.className = 'inline-flex items-baseline mx-1 my-1';
+                    const widthCh = Math.max(6, item.cleanWord.length + 2);
+                    wrapper.innerHTML = `
+                        <input type="text" data-blank-idx="${idx}" style="width: ${widthCh}ch" class="blank-input text-sm sm:text-base" autocomplete="off" autocapitalize="off">
+                        <span>${item.punct}</span>
+                    `;
+                    container.appendChild(wrapper);
+                }
+            });
+        }
+
+        function gradeBlanks() {
+            const inputs = document.querySelectorAll('#blanks-container input[data-blank-idx]');
+            if (inputs.length === 0) return;
+
+            let correctCount = 0;
+            inputs.forEach(input => {
+                const idx = parseInt(input.dataset.blankIdx);
+                const expected = state.blanksData[idx].cleanWord;
+                const userVal = input.value.trim();
+
+                input.classList.remove('blank-correct', 'blank-wrong');
+                if (userVal.toLowerCase() === expected.toLowerCase()) {
+                    correctCount++;
+                    input.classList.add('blank-correct');
+                    input.value = expected;
+                } else {
+                    input.classList.add('blank-wrong');
+                    input.title = `Đáp án đúng: ${expected}`;
+                    if (!input.nextElementSibling?.classList.contains('ans-hint')) {
+                        const hint = document.createElement('span');
+                        hint.className = 'ans-hint text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded ml-1';
+                        hint.textContent = `(${expected})`;
+                        input.parentElement.appendChild(hint);
+                    }
+                }
+            });
+
+            const scoreBadge = document.getElementById('blanks-score-badge');
+            scoreBadge.textContent = `Kết quả: ${correctCount} / ${inputs.length} từ đúng`;
+            scoreBadge.classList.remove('hidden');
+            showToast(`Bạn điền đúng ${correctCount}/${inputs.length} chỗ trống!`, correctCount === inputs.length ? 'success' : 'info');
+        }
+
+        // =========================================================================
+        // 9. TAB 4: NÓI CHUYỆN VỚI AI
+        // =========================================================================
+        function renderChunks() {
+            const grid = document.getElementById('chunks-grid');
+            grid.innerHTML = '';
+            CHUNKS_DATA.forEach(chunk => {
+                const item = document.createElement('div');
+                item.className = 'bg-white border border-amber-200/70 rounded-xl p-2.5 flex items-center justify-between gap-2 hover:border-teal-400 transition';
+                item.innerHTML = `
+                    <div class="cursor-pointer flex-1" onclick="insertChunkToChat('${chunk.de.replace(/'/g, "\\'")}')">
+                        <p class="font-bold text-slate-800">${chunk.de}</p>
+                        <p class="text-[11px] text-slate-500">${chunk.vi}</p>
+                    </div>
+                    <button onclick="speakGerman('${chunk.de.replace(/'/g, "\\'")}')" class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 hover:bg-teal-100 flex items-center justify-center shrink-0 cursor-pointer" title="Nghe phát âm">
+                        <i class="fa-solid fa-volume-high text-xs"></i>
+                    </button>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        function toggleChunksDrawer() {
+            document.getElementById('chunks-drawer').classList.toggle('hidden');
+        }
+
+        function toggleAIHintsVisibility(isVisible) {
+            state.showAIHints = isVisible;
+            document.querySelectorAll('.ai-hint-box').forEach(box => {
+                if (isVisible) box.classList.remove('hidden');
+                else box.classList.add('hidden');
+            });
+            showToast(isVisible ? 'Đã bật gợi ý từ vựng & mẫu câu trả lời' : 'Đã tắt gợi ý để tự luyện phản xạ độc lập', 'info');
+        }
+
+        function insertChunkToChat(phrase) {
+            const input = document.getElementById('chat-text-input');
+            input.value = input.value ? `${input.value} ${phrase}` : phrase;
+            input.focus();
+            showToast('Đã chèn cụm từ vào ô nhập!', 'info');
+        }
+
+        function handleChatTopicChange() {
+            const val = document.getElementById('chat-topic-select').value;
+            const customBox = document.getElementById('custom-chat-topic-box');
+            if (val === 'custom') customBox.classList.remove('hidden');
+            else {
+                customBox.classList.add('hidden');
+                resetChatSession();
+            }
+        }
+
+        function getActiveChatTopic() {
+            const val = document.getElementById('chat-topic-select').value;
+            if (val === 'custom') {
+                return document.getElementById('custom-chat-topic-input').value.trim() || 'Giao tiếp hàng ngày ở Đức';
+            }
+            return val;
+        }
+
+        function resetChatSession() {
+            const topic = getActiveChatTopic();
+            state.chatHistory = [];
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML = '';
+
+            let openingGerman = "Hallo! Wie geht es dir heute? Worüber möchtest du sprechen?";
+            let openingVietnamese = "Xin chào! Hôm nay bạn khỏe không? Bạn muốn nói chuyện về chủ đề gì?";
+            let initialHints = {
+                vocabHints: [
+                    { de: "gut / müde", vi: "khỏe / mệt" },
+                    { de: "Deutsch lernen", vi: "học tiếng Đức" },
+                    { de: "die Arbeit", vi: "công việc" },
+                    { de: "der Alltag", vi: "cuộc sống hàng ngày" }
+                ],
+                sampleReplies: [
+                    "Mir geht es gut, danke! Ich möchte über meinen Alltag sprechen.",
+                    "Hallo! Heute habe ich viel Deutsch gelernt."
+                ]
+            };
+
+            if (topic.includes('bệnh nhân') || topic.includes('huyết áp')) {
+                openingGerman = "Guten Morgen! Ich bin Frau Weber. Kommen Sie bitte herein. Wie können Sie mir heute helfen?";
+                openingVietnamese = "Chào buổi sáng! Tôi là bà Weber. Mời anh/chị vào. Hôm nay anh/chị có thể giúp gì cho tôi?";
+                initialHints = {
+                    vocabHints: [
+                        { de: "der Blutdruck", vi: "huyết áp" },
+                        { de: "messen", vi: "đo" },
+                        { de: "die Schmerzen", vi: "cơn đau" },
+                        { de: "sich fühlen", vi: "cảm thấy" },
+                        { de: "die Tabletten", vi: "thuốc viên" }
+                    ],
+                    sampleReplies: [
+                        "Guten Morgen, Frau Weber! Wie fühlen Sie sich heute?",
+                        "Ich möchte jetzt Ihren Blutdruck messen und Ihnen Ihre Tabletten bringen."
+                    ]
+                };
+            } else if (topic.includes('Phỏng vấn')) {
+                openingGerman = "Guten Tag! Schön, dass Sie da sind. Erzählen Sie mir bitte kurz: Warum möchten Sie als Pflegekraft in Deutschland arbeiten?";
+                openingVietnamese = "Xin chào! Rất vui được gặp bạn. Hãy kể ngắn gọn cho tôi nghe: Tại sao bạn muốn làm điều dưỡng tại Đức?";
+                initialHints = {
+                    vocabHints: [
+                        { de: "Menschen helfen", vi: "giúp đỡ mọi người" },
+                        { de: "geduldig", vi: "kiên nhẫn" },
+                        { de: "die Ausbildung", vi: "đào tạo nghề" },
+                        { de: "verantwortungsvoll", vi: "có trách nhiệm" }
+                    ],
+                    sampleReplies: [
+                        "Ich möchte als Pflegekraft arbeiten, weil ich gerne älteren Menschen helfe.",
+                        "Ich bin sehr geduldig und lerne seit vier Monaten intensiv Deutsch."
+                    ]
+                };
+            } else if (topic.includes('siêu thị')) {
+                openingGerman = "Hallo! Kann ich Ihnen helfen? Suchen Sie etwas Bestimmtes im Supermarkt?";
+                openingVietnamese = "Xin chào! Tôi có thể giúp gì cho bạn? Bạn đang tìm món đồ gì cụ thể trong siêu thị à?";
+                initialHints = {
+                    vocabHints: [
+                        { de: "das Brot / die Milch", vi: "bánh mì / sữa" },
+                        { de: "das Obst", vi: "trái cây" },
+                        { de: "kosten", vi: "có giá" },
+                        { de: "die Kasse", vi: "quầy thu ngân" }
+                    ],
+                    sampleReplies: [
+                        "Ja, bitte! Wo finde ich frisches Obst und Gemüse?",
+                        "Ich suche Milch und Brot. Können Sie mir helfen?"
+                    ]
+                };
+            }
+
+            appendChatMessage('ai', openingGerman, openingVietnamese, initialHints);
+            state.chatHistory.push({ role: 'model', text: openingGerman });
+        }
+
+        function appendChatMessage(sender, germanText, vietnameseSub = '', hintsData = null) {
+            const chatBox = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+            wrapper.className = sender === 'user' ? 'flex flex-col items-end' : 'flex flex-col items-start';
+
+            const escapedText = germanText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+            if (sender === 'user') {
+                wrapper.innerHTML = `
+                    <div class="max-w-[85%] bg-teal-600 text-white rounded-2xl rounded-tr-xs px-4 py-3 shadow-2xs">
+                        <p class="text-sm sm:text-base font-medium leading-relaxed">${germanText}</p>
+                    </div>
+                    <span class="text-[11px] text-slate-400 mt-1 mr-1">Bạn vừa nói</span>
+                `;
+            } else {
+                let hintsHTML = '';
+                if (hintsData && ((hintsData.vocabHints && hintsData.vocabHints.length > 0) || (hintsData.sampleReplies && hintsData.sampleReplies.length > 0))) {
+                    const vocabBadges = (hintsData.vocabHints || []).map(v => `
+                        <button onclick="insertChunkToChat('${v.de.replace(/'/g, "\\'")}')" class="bg-white hover:bg-teal-50 border border-teal-200/80 rounded-lg px-2 py-1 text-left transition cursor-pointer">
+                            <span class="font-bold text-teal-800">${v.de}</span>
+                            <span class="text-slate-500 text-[11px]"> (${v.vi})</span>
+                        </button>
+                    `).join('');
+
+                    const sampleLines = (hintsData.sampleReplies || []).map(s => {
+                        const escSample = s.replace(/'/g, "\\'");
+                        return `
+                            <div class="flex items-center justify-between gap-2 bg-white/90 px-2.5 py-1.5 rounded-lg border border-sky-100">
+                                <span onclick="insertChunkToChat('${escSample}')" class="text-xs font-medium text-slate-700 hover:text-teal-700 cursor-pointer flex-1">"${s}"</span>
+                                <button onclick="speakGerman('${escSample}')" class="text-teal-600 hover:text-teal-800 px-1.5 shrink-0 cursor-pointer" title="Nghe mẫu câu gợi ý">
+                                    <i class="fa-solid fa-volume-high text-xs"></i>
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+
+                    hintsHTML = `
+                        <div class="ai-hint-box ${state.showAIHints ? '' : 'hidden'} mt-2 max-w-[92%] bg-gradient-to-br from-teal-50/90 to-sky-50/90 border border-teal-200/70 rounded-2xl p-3 space-y-2 shadow-2xs">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-teal-800 uppercase tracking-wide"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Gợi ý từ vựng & Ý trả lời:</span>
+                                <span class="text-[10px] text-slate-400">Bấm để chèn</span>
+                            </div>
+                            ${vocabBadges ? `<div class="flex flex-wrap gap-1.5 text-xs">${vocabBadges}</div>` : ''}
+                            ${sampleLines ? `<div class="space-y-1 pt-1 border-t border-teal-100/80">${sampleLines}</div>` : ''}
+                        </div>
+                    `;
+                }
+
+                wrapper.innerHTML = `
+                    <div class="max-w-[88%] bg-slate-100 text-slate-800 rounded-2xl rounded-tl-xs px-4 py-3 border border-slate-200/80 space-y-1.5">
+                        <div class="flex items-start justify-between gap-2">
+                            <p class="text-sm sm:text-base font-semibold text-slate-800 leading-relaxed">${germanText}</p>
+                            <button onclick="speakGerman('${escapedText}')" class="w-8 h-8 rounded-full bg-white text-teal-700 hover:bg-teal-50 border border-teal-100 flex items-center justify-center shrink-0 shadow-2xs cursor-pointer" title="Nghe lại câu này">
+                                <i class="fa-solid fa-volume-high text-xs"></i>
+                            </button>
+                        </div>
+                        ${vietnameseSub ? `<p class="text-xs text-slate-500 border-t border-slate-200/70 pt-1.5">${vietnameseSub}</p>` : ''}
+                    </div>
+                    ${hintsHTML}
+                    <span class="text-[11px] text-teal-700 font-semibold mt-1 ml-1"><i class="fa-solid fa-robot mr-1"></i>Đối tác luyện nói</span>
+                `;
+            }
+
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function cleanRecognizedGerman(rawText) {
+            return rawText
+                .replace(/\bgeht's\s+es\b/gi, "geht's")
+                .replace(/\b(\w+)\s+\1\b/gi, '$1')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        let chatRecognition = null;
+        function toggleChatRecording() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showToast('Thiết bị không hỗ trợ nhận diện giọng nói trực tiếp. Bạn hãy dùng micro trên bàn phím điện thoại hoặc gõ chữ nhé!', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('btn-mic-toggle');
+            const label = document.getElementById('mic-btn-label');
+            const icon = document.getElementById('mic-icon');
+            const input = document.getElementById('chat-text-input');
+
+            if (state.isChatRecording && chatRecognition) {
+                chatRecognition.stop();
+                return;
+            }
+
+            if (chatRecognition) {
+                try { chatRecognition.abort(); } catch (e) {}
+            }
+
+            chatRecognition = new SpeechRecognition();
+            chatRecognition.lang = 'de-DE';
+            chatRecognition.continuous = true;
+            chatRecognition.interimResults = false;
+
+            let baseText = input.value ? input.value.trim() + ' ' : '';
+
+            chatRecognition.onstart = () => {
+                state.isChatRecording = true;
+                btn.classList.add('recording-active');
+                icon.className = 'fa-solid fa-stop-circle text-base';
+                label.textContent = 'Đang nghe... (Suy nghĩ thoải mái, bấm lại để Dừng)';
+            };
+
+            chatRecognition.onresult = (event) => {
+                let chunk = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) chunk += event.results[i][0].transcript + ' ';
+                }
+                if (chunk) {
+                    baseText += chunk;
+                    input.value = cleanRecognizedGerman(baseText);
+                }
+            };
+
+            chatRecognition.onerror = (event) => {
+                if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                    showToast('Lỗi micro: ' + event.error, 'warning');
+                }
+            };
+
+            chatRecognition.onend = () => {
+                state.isChatRecording = false;
+                btn.classList.remove('recording-active');
+                icon.className = 'fa-solid fa-microphone text-base';
+                label.textContent = 'Bấm để nói tiếng Đức (Không giới hạn thời gian)';
+            };
+
+            chatRecognition.start();
+        }
+
+        async function sendChatMessage() {
+            if (state.isChatRecording && chatRecognition) chatRecognition.stop();
+
+            const input = document.getElementById('chat-text-input');
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            input.value = '';
+            appendChatMessage('user', userText);
+            state.chatHistory.push({ role: 'user', text: userText });
+
+            const sendBtn = document.getElementById('btn-send-chat');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            const feedbackPanel = document.getElementById('grammar-feedback-panel');
+            feedbackPanel.innerHTML = `
+                <div class="flex items-center gap-2 text-teal-700 text-xs font-semibold p-4 bg-teal-50 rounded-xl">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <span>Đang phân tích ngữ pháp & chuẩn bị phản hồi...</span>
+                </div>
+            `;
+
+            const topic = getActiveChatTopic();
+            const recentContext = state.chatHistory.slice(-6).map(m => `${m.role === 'user' ? 'Học viên' : 'AI'}: ${m.text}`).join('\n');
+
+            const systemPrompt = `Bạn là giáo viên tiếng Đức tận tâm đang đóng vai hội thoại với một học viên Việt Nam (đã học 4 tháng, mục tiêu làm điều dưỡng tại Đức).
+Chủ đề hội thoại hiện tại: "${topic}".
+Nhiệm vụ của bạn gồm các phần sau và PHẢI trả về đúng định dạng JSON:
+1. "replyGerman": Câu trả lời tiếp nối hội thoại bằng tiếng Đức trình độ A2 (ngắn gọn 1-3 câu, từ vựng rõ ràng, tự nhiên, kết thúc bằng 1 câu hỏi mở để học viên dễ phản xạ tiếp).
+2. "replyVietnamese": Dịch nghĩa tiếng Việt của câu trả lời trên.
+3. "isCorrect": true nếu câu của học viên đúng ngữ pháp và tự nhiên, false nếu có lỗi ngữ pháp/từ vựng/trật tự từ.
+4. "correctedGerman": Câu tiếng Đức đã được sửa chuẩn xác và tự nhiên nhất theo cách người bản xứ nói.
+5. "explanationVietnamese": Giải thích ngắn gọn, dễ hiểu bằng tiếng Việt (tối đa 2-3 gạch đầu dòng) về lỗi sai (chia động từ, trật tự từ, mạo từ...) hoặc khen ngợi nếu đã nói tốt.
+6. "vocabHints": Danh sách 4 đến 5 từ vựng/cụm từ tiếng Đức trình độ A2 hữu ích để học viên trả lời câu hỏi mới của bạn (mỗi phần tử gồm "de" là từ/cụm từ tiếng Đức có kèm mạo từ nếu là danh từ, và "vi" là nghĩa tiếng Việt ngắn gọn).
+7. "sampleReplies": Danh sách 2 mẫu câu trả lời gợi ý ngắn gọn bằng tiếng Đức (trình độ A2) phù hợp với câu hỏi mới của bạn.`;
+
+            const userPrompt = `Lịch sử hội thoại gần đây:\n${recentContext}\n\nHãy phản hồi và phân tích câu nói mới nhất của học viên: "${userText}"`;
+
+            try {
+                const responseJson = await callGeminiStructured(systemPrompt, userPrompt);
+                appendChatMessage('ai', responseJson.replyGerman, responseJson.replyVietnamese, {
+                    vocabHints: responseJson.vocabHints,
+                    sampleReplies: responseJson.sampleReplies
+                });
+                state.chatHistory.push({ role: 'model', text: responseJson.replyGerman });
+                speakGerman(responseJson.replyGerman);
+                renderGrammarFeedback(userText, responseJson);
+            } catch (err) {
+                showToast('Không thể kết nối AI lúc này. Vui lòng thử gửi lại!', 'error');
+                feedbackPanel.innerHTML = `<p class="text-xs text-rose-600 p-3 bg-rose-50 rounded-xl">Có lỗi xảy ra khi phân tích câu. Bạn hãy thử gửi lại nhé.</p>`;
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<span>Gửi</span><i class="fa-solid fa-paper-plane"></i>';
+            }
+        }
+
+        function renderGrammarFeedback(originalUserText, data) {
+            const panel = document.getElementById('grammar-feedback-panel');
+            const escapedCorrected = (data.correctedGerman || '').replace(/'/g, "\\'");
+
+            panel.innerHTML = `
+                <div class="space-y-3">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-[11px] font-bold text-slate-400 uppercase block mb-1">Câu bạn vừa nói:</span>
+                        <p class="text-xs sm:text-sm text-slate-700 font-medium">"${originalUserText}"</p>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl ${data.isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-sky-50 border border-sky-200'}">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[11px] font-bold ${data.isCorrect ? 'text-emerald-700' : 'text-sky-800'} uppercase">
+                                ${data.isCorrect ? '<i class="fa-solid fa-circle-check mr-1"></i> Chuẩn & Tự nhiên!' : '<i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Cách người Đức nói chuẩn:'}
+                            </span>
+                            <button onclick="speakGerman('${escapedCorrected}')" class="w-7 h-7 rounded-lg bg-white text-teal-700 shadow-2xs flex items-center justify-center cursor-pointer" title="Nghe câu chuẩn">
+                                <i class="fa-solid fa-volume-high text-xs"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm font-bold text-slate-800 leading-snug">"${data.correctedGerman}"</p>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-amber-50/60 border border-amber-100">
+                        <span class="text-[11px] font-bold text-amber-800 uppercase block mb-1">Giải thích chi tiết:</span>
+                        <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">${data.explanationVietnamese}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================================
+        // 10. KẾT NỐI GEMINI API
+        // =========================================================================
+        async function fetchWithRetry(url, options, maxRetries = 3) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return await response.json();
+                } catch (e) {}
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            }
+            throw new Error('API request failed after retries');
+        }
+
+        async function callGeminiText(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            const result = await fetchWithRetry(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            return result?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        }
+
+        async function callGeminiStructured(systemInstruction, userPrompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            replyGerman: { type: "STRING" },
+                            replyVietnamese: { type: "STRING" },
+                            isCorrect: { type: "BOOLEAN" },
+                            correctedGerman: { type: "STRING" },
+                            explanationVietnamese: { type: "STRING" },
+                            vocabHints: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        de: { type: "STRING" },
+                                        vi: { type: "STRING" }
+                                    },
+                                    required: ["de", "vi"]
+                                }
+                            },
+                            sampleReplies: {
+                                type: "ARRAY",
+                                items: { type: "STRING" }
+                            }
+                        },
+                        required: ["replyGerman", "replyVietnamese", "isCorrect", "correctedGerman", "explanationVietnamese", "vocabHints", "sampleReplies"]
+                    }
+                }
+            };
+            const result = await fetchWithRetry(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            return JSON.parse(jsonText);
+        }
+    </script>
+</body>
+</html>
