@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Deutsch Pflege & Alltag Trainer</title>
-    <link rel="apple-touch-icon" href="https://i.ibb.co/tTNgr2vv/image-9.png">
-    <link rel="icon" type="image/png" href="https://i.ibb.co/tTNgr2vv/image-9.png">
+<link rel="apple-touch-icon" href="https://i.ibb.co/tTNgr2vv/image-9.png">
+<link rel="icon" type="image/png" href="https://i.ibb.co/tTNgr2vv/image-9.png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -20,10 +20,20 @@
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
         }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
         @keyframes pulse-ring {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 14px rgba(225, 29, 72, 0); }
@@ -33,14 +43,6 @@
             animation: pulse-ring 1.5s infinite;
             background-color: #e11d48 !important;
             color: #ffffff !important;
-        }
-        @keyframes pop-word {
-            0% { transform: scale(0.85); }
-            60% { transform: scale(1.08); }
-            100% { transform: scale(1); }
-        }
-        .word-chip-hit {
-            animation: pop-word 0.25s ease-out;
         }
         .blank-input {
             border-bottom: 2px solid #0d9488;
@@ -53,11 +55,27 @@
             color: #0f766e;
             text-align: center;
         }
-        .blank-input:focus { background-color: #ccfbf1; border-bottom-color: #0284c7; }
-        .blank-correct { border-bottom-color: #16a34a !important; background-color: #dcfce7 !important; color: #15803d !important; }
-        .blank-wrong { border-bottom-color: #dc2626 !important; background-color: #fee2e2 !important; color: #b91c1c !important; }
-        .toggle-checkbox:checked { right: 0; border-color: #0d9488; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #0d9488; }
+        .blank-input:focus {
+            background-color: #ccfbf1;
+            border-bottom-color: #0284c7;
+        }
+        .blank-correct {
+            border-bottom-color: #16a34a !important;
+            background-color: #dcfce7 !important;
+            color: #15803d !important;
+        }
+        .blank-wrong {
+            border-bottom-color: #dc2626 !important;
+            background-color: #fee2e2 !important;
+            color: #b91c1c !important;
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #0d9488;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #0d9488;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row pb-20 md:pb-0">
@@ -69,7 +87,7 @@
     <aside class="hidden md:flex md:w-64 lg:w-72 bg-white border-r border-teal-100 flex-col justify-between shrink-0 sticky top-0 h-screen shadow-sm z-20">
         <div>
             <div class="p-5 border-b border-teal-50 flex items-center gap-3">
-                <img src="https://i.ibb.co/tTNgr2vv/image-9.png" alt="DE" class="w-10 h-10 rounded-xl object-cover shadow-sm border border-teal-200 shrink-0">
+               <img src="https://i.ibb.co/tTNgr2vv/image-9.png" alt="DE" class="w-10 h-10 rounded-xl object-cover shadow-sm border border-teal-200 shrink-0">
                 <div>
                     <h1 class="font-bold text-slate-800 text-base leading-tight">Deutsch Pflege</h1>
                     <p class="text-xs text-teal-600 font-medium">& Alltag Trainer (A1–B1)</p>
@@ -190,13 +208,13 @@
         </section>
 
         <!-- ===================================================================== -->
-        <!-- TAB 1: SHADOWING (ĐỌC NHẠI & NHẢY TỪ REALTIME)                        -->
+        <!-- TAB 1: SHADOWING (ĐỌC NHẠI & KIỂM TRA PHÁT ÂM)                        -->
         <!-- ===================================================================== -->
         <section id="tab-shadowing" class="tab-content space-y-4">
             <div class="bg-white rounded-2xl border border-teal-100 p-4 shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h3 class="font-bold text-slate-800 text-base">Luyện đọc nhại (Shadowing)</h3>
-                    <p class="text-xs text-slate-500">Nghe máy đọc mẫu, bấm <strong>Chấm phát âm</strong> để thấy từng từ nhảy màu xanh ngay khi đọc, hoặc thu giọng thật chuẩn WAV.</p>
+                    <p class="text-xs text-slate-500">Nghe máy đọc mẫu, sau đó bấm Micro để thu âm giọng thật và xem máy nhận diện từng từ.</p>
                 </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <button onclick="playFullText()" class="flex-1 sm:flex-initial bg-teal-600 hover:bg-teal-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer">
@@ -345,7 +363,7 @@
         </section>
 
         <!-- ===================================================================== -->
-        <!-- TAB 4: NÓI CHUYỆN VỚI AI THEO CHỦ ĐỀ                                  -->
+        <!-- TAB 4: NÓI CHUYỆN VỚI AI THEO CHỦ ĐỀ (KHÔNG HỐI THÚC + LIVE FIXER)    -->
         <!-- ===================================================================== -->
         <section id="tab-aichat" class="tab-content hidden flex-1 flex flex-col gap-3">
             <div class="bg-white rounded-2xl border border-teal-100 p-3.5 shadow-xs space-y-3">
@@ -492,6 +510,8 @@
             { de: "Alles wird gut, machen Sie sich keine Sorgen.", vi: "Mọi chuyện sẽ ổn thôi, bác đừng lo lắng." }
         ];
 
+        const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
         let state = {
             currentTab: 'shadowing',
             sourceText: PRESET_TEXTS.hobby,
@@ -501,15 +521,16 @@
             voices: [],
             // Shadowing state
             userAudioBlobs: {},
-            sttSentenceIndex: null,
+            activeMediaRecorder: null,
             activeRecognition: null,
+            recordingSentenceIndex: null,
             liveShadowTranscript: '',
-            wavRecordingIndex: null,
-            wavAudioCtx: null,
-            wavStream: null,
-            wavProcessor: null,
-            wavBuffers: [],
-            wavSampleRate: 44100,
+            // iOS WAV recorder state
+            iosAudioCtx: null,
+            iosStream: null,
+            iosProcessor: null,
+            iosBuffers: [],
+            iosSampleRate: 44100,
             // Dictation state
             dictationIndex: 0,
             // Fill in blanks state
@@ -553,7 +574,9 @@
             toast.className = `${colors[type] || colors.info} px-4 py-3 rounded-xl shadow-lg text-xs sm:text-sm font-medium flex items-center justify-between gap-2 pointer-events-auto transition-all duration-300`;
             toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="opacity-75 hover:opacity-100 cursor-pointer"><i class="fa-solid fa-xmark"></i></button>`;
             container.appendChild(toast);
-            setTimeout(() => { if (toast.parentElement) toast.remove(); }, 4500);
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, 4000);
         }
 
         // =========================================================================
@@ -569,8 +592,11 @@
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
             const sourceSection = document.getElementById('source-manager-section');
-            if (tabId === 'aichat') sourceSection.classList.add('hidden');
-            else sourceSection.classList.remove('hidden');
+            if (tabId === 'aichat') {
+                sourceSection.classList.add('hidden');
+            } else {
+                sourceSection.classList.remove('hidden');
+            }
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if (btn.dataset.tab === tabId) {
@@ -601,9 +627,11 @@
             const body = document.getElementById('source-editor-body');
             const btn = document.getElementById('toggle-editor-btn');
             body.classList.toggle('hidden');
-            btn.innerHTML = body.classList.contains('hidden')
-                ? '<i class="fa-solid fa-chevron-down mr-1"></i> Mở rộng'
-                : '<i class="fa-solid fa-chevron-up mr-1"></i> Thu gọn';
+            if (body.classList.contains('hidden')) {
+                btn.innerHTML = '<i class="fa-solid fa-chevron-down mr-1"></i> Mở rộng';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-chevron-up mr-1"></i> Thu gọn';
+            }
         }
 
         // =========================================================================
@@ -630,7 +658,9 @@
                     if (!state.selectedVoiceURI && (voice.name.includes('Natural') || voice.name.includes('Google') || idx === 0)) {
                         state.selectedVoiceURI = voice.voiceURI;
                     }
-                    if (voice.voiceURI === state.selectedVoiceURI) opt.selected = true;
+                    if (voice.voiceURI === state.selectedVoiceURI) {
+                        opt.selected = true;
+                    }
                     selectEl.appendChild(opt);
                 });
             };
@@ -678,12 +708,15 @@
         }
 
         function stopSpeech() {
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
             document.querySelectorAll('.sentence-card').forEach(card => {
                 card.classList.remove('ring-2', 'ring-teal-500', 'bg-teal-50/60');
             });
         }
 
+        // Smart Player (Play/Pause & -3s / +3s)
         function getPlayerText(mode) {
             if (mode === 'dictation') return state.sentences[state.dictationIndex] || '';
             return state.sourceText || '';
@@ -910,7 +943,7 @@
         }
 
         // =========================================================================
-        // 6. TAB 1: SHADOWING (NHẢY TỪ REALTIME + THU ÂM WAV CHUẨN SAFARI iOS)
+        // 6. TAB 1: SHADOWING (NGUYÊN BẢN PC + FIX RIÊNG CHO SAFARI iOS)
         // =========================================================================
         function renderShadowingList() {
             const container = document.getElementById('shadowing-list');
@@ -935,26 +968,23 @@
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
                         <div class="flex items-center gap-2">
-                            <button onclick="playSingleSentence(${index})" class="bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
+                            <button onclick="playSingleSentence(${index})" class="bg-teal-50 hover:bg-teal-100 text-teal-800 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
                                 <i class="fa-solid fa-volume-high"></i> Nghe mẫu
                             </button>
-                            <button onclick="loopSingleSentence(${index})" class="bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold text-xs sm:text-sm px-2.5 py-2 rounded-xl flex items-center gap-1 transition cursor-pointer" title="Đọc lặp lại 2 lần liên tiếp">
-                                <i class="fa-solid fa-repeat"></i> 2x
+                            <button onclick="loopSingleSentence(${index})" class="bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer" title="Đọc lặp lại 2 lần liên tiếp">
+                                <i class="fa-solid fa-repeat"></i> Lặp 2x
                             </button>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <button onclick="toggleShadowingSTT(${index})" id="shadow-stt-btn-${index}" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
-                                <i class="fa-solid fa-spell-check"></i> <span>Chấm phát âm</span>
+                            <button onclick="toggleShadowingRecording(${index})" id="shadow-mic-btn-${index}" class="bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
+                                <i class="fa-solid fa-microphone"></i> <span>Thu âm & Kiểm tra</span>
                             </button>
-                            <button onclick="toggleShadowingWav(${index})" id="shadow-wav-btn-${index}" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
-                                <i class="fa-solid fa-microphone"></i> <span>Thu giọng tôi</span>
+                            <button onclick="playUserShadowingAudio(${index})" id="shadow-replay-btn-${index}" class="${hasRecording ? 'flex' : 'hidden'} bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs sm:text-sm px-3.5 py-2 rounded-xl items-center gap-1.5 transition cursor-pointer">
+                                <i class="fa-solid fa-headphones"></i> <span>Nghe lại giọng tôi</span>
                             </button>
                         </div>
                     </div>
-                    <div id="shadow-audio-box-${index}" class="${hasRecording ? 'block' : 'hidden'} bg-indigo-50/60 border border-indigo-100 rounded-xl p-2.5 space-y-1">
-                        <p class="text-[11px] font-bold text-indigo-800"><i class="fa-solid fa-headphones mr-1"></i> Bản thu âm giọng của bạn (bấm Play ▶ để nghe lại):</p>
-                        <audio id="shadow-audio-player-${index}" controls playsinline class="w-full h-10 rounded-lg" src="${hasRecording ? state.userAudioBlobs[index] : ''}"></audio>
-                    </div>
+                    <audio id="shadow-audio-player-${index}" controls playsinline class="${hasRecording ? 'block' : 'hidden'} w-full h-10 mt-2 rounded-lg" src="${hasRecording ? state.userAudioBlobs[index] : ''}"></audio>
                     <div id="shadow-feedback-${index}" class="hidden text-xs sm:text-sm p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2"></div>
                 `;
                 container.appendChild(card);
@@ -1006,281 +1036,20 @@
             }
         }
 
-        // --- CHẾ ĐỘ A: CHẤM PHÁT ÂM & NHẢY TỪNG CHỮ REALTIME ---
-        function renderLiveWordProgress(index, spokenText, isFinal = false) {
-            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
-            if (!feedbackBox) return;
-
-            const targetText = state.sentences[index] || '';
-            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
-            const targetWords = cleanWords(targetText);
-            const spokenWords = cleanWords(spokenText);
-
-            let matched = 0;
-            const wordChips = targetWords.map(w => {
-                const hit = spokenWords.includes(w);
-                if (hit) matched++;
-                if (hit) {
-                    return `<span class="word-chip-hit px-2.5 py-1 rounded-lg font-bold text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">${w}</span>`;
-                } else if (isFinal) {
-                    return `<span class="px-2.5 py-1 rounded-lg font-semibold text-xs bg-rose-100 text-rose-700 border border-rose-200">${w}</span>`;
-                } else {
-                    return `<span class="px-2.5 py-1 rounded-lg font-medium text-xs bg-white text-slate-400 border border-slate-200">${w}</span>`;
-                }
-            }).join(' ');
-
-            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
-            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
-
-            if (!isFinal) {
-                feedbackBox.innerHTML = `
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="text-rose-600 font-bold text-xs flex items-center gap-1.5"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang nghe (từng từ sẽ nhảy xanh khi đọc trúng):</span>
-                        <span class="font-bold px-2.5 py-0.5 rounded-full text-xs bg-teal-100 text-teal-800">${matched}/${targetWords.length} từ (${score}%)</span>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-1.5 pt-1">${wordChips}</div>
-                    ${spokenText ? `<p class="text-xs text-slate-600 pt-1 border-t border-slate-200/80">Đang nghe: <span class="font-semibold text-slate-900">"${spokenText}"</span></p>` : ''}
-                `;
-            } else {
-                feedbackBox.innerHTML = `
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
-                        <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
-                    </div>
-                    <p class="text-slate-900 font-semibold">"${spokenText}"</p>
-                    <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
-                        <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
-                    </div>
-                `;
-            }
-        }
-
-        async function toggleShadowingSTT(index) {
-            if (state.wavRecordingIndex !== null) {
-                await stopActiveWavRecording();
-            }
-            if (state.sttSentenceIndex === index) {
-                stopActiveSTT();
-                return;
-            }
-            if (state.sttSentenceIndex !== null) {
-                stopActiveSTT();
-                await new Promise(r => setTimeout(r, 200));
-            }
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                showToast('Trình duyệt không hỗ trợ chấm phát âm tự động.', 'warning');
-                return;
-            }
-
-            state.sttSentenceIndex = index;
-            state.liveShadowTranscript = '';
-
-            const btn = document.getElementById(`shadow-stt-btn-${index}`);
-            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
-
-            btn.classList.add('recording-active');
-            btn.innerHTML = '<i class="fa-solid fa-stop-circle"></i> <span>Dừng chấm</span>';
-
-            feedbackBox.classList.remove('hidden');
-            renderLiveWordProgress(index, '', false);
-
-            try {
-                if (state.activeRecognition) {
-                    try { state.activeRecognition.abort(); } catch (e) {}
-                }
-                const rec = new SpeechRecognition();
-                rec.lang = 'de-DE';
-                rec.continuous = true;
-                rec.interimResults = true;
-
-                rec.onresult = (event) => {
-                    let finalStr = '';
-                    let interimStr = '';
-                    for (let i = 0; i < event.results.length; i++) {
-                        if (event.results[i].isFinal) finalStr += event.results[i][0].transcript + ' ';
-                        else interimStr += event.results[i][0].transcript;
-                    }
-                    state.liveShadowTranscript = (finalStr + interimStr).trim();
-                    if (state.sttSentenceIndex === index) {
-                        renderLiveWordProgress(index, state.liveShadowTranscript, false);
-                    }
-                };
-
-                rec.onerror = (e) => {
-                    if (e.error !== 'aborted' && e.error !== 'no-speech') {
-                        showToast('Lỗi nhận diện giọng nói: ' + e.error, 'warning');
-                    }
-                };
-
-                rec.onend = () => {
-                    if (state.sttSentenceIndex === index) finalizeShadowingSTT(index);
-                };
-
-                state.activeRecognition = rec;
-                rec.start();
-            } catch (err) {
-                stopActiveSTT();
-            }
-        }
-
-        function stopActiveSTT() {
-            const idx = state.sttSentenceIndex;
-            if (idx === null) return;
-            if (state.activeRecognition) {
-                try { state.activeRecognition.stop(); } catch (e) {}
-            }
-            finalizeShadowingSTT(idx);
-        }
-
-        function finalizeShadowingSTT(index) {
-            if (state.sttSentenceIndex !== index) return;
-            state.sttSentenceIndex = null;
-
-            const btn = document.getElementById(`shadow-stt-btn-${index}`);
-            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
-            if (!btn || !feedbackBox) return;
-
-            btn.classList.remove('recording-active');
-            btn.innerHTML = '<i class="fa-solid fa-spell-check"></i> <span>Chấm phát âm</span>';
-
-            const spokenText = state.liveShadowTranscript.trim();
-            if (!spokenText) {
-                feedbackBox.innerHTML = `<div class="text-amber-700 font-medium">Chưa nghe rõ tiếng bạn đọc. Hãy bấm <strong>Chấm phát âm</strong> và đọc lại gần Micro nhé!</div>`;
-                return;
-            }
-
-            renderLiveWordProgress(index, spokenText, true);
-        }
-
-        // --- CHẾ ĐỘ B: THU ÂM GIỌNG THẬT CHUẨN WAV QUA AUDIOCONTEXT ---
-        async function toggleShadowingWav(index) {
-            if (state.sttSentenceIndex !== null) {
-                stopActiveSTT();
-                await new Promise(r => setTimeout(r, 200));
-            }
-            if (state.wavRecordingIndex === index) {
-                await stopActiveWavRecording();
-                return;
-            }
-            if (state.wavRecordingIndex !== null) {
-                await stopActiveWavRecording();
-                await new Promise(r => setTimeout(r, 200));
-            }
-
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                showToast('Trình duyệt không hỗ trợ truy cập Micro.', 'error');
-                return;
-            }
-
-            try {
-                stopSpeech();
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: { echoCancellation: true, noiseSuppression: true }
-                });
-
-                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                const audioCtx = new AudioContextClass();
-                if (audioCtx.state === 'suspended') {
-                    await audioCtx.resume();
-                }
-
-                const source = audioCtx.createMediaStreamSource(stream);
-                const processor = audioCtx.createScriptProcessor(4096, 1, 1);
-
-                state.wavRecordingIndex = index;
-                state.wavStream = stream;
-                state.wavAudioCtx = audioCtx;
-                state.wavProcessor = processor;
-                state.wavBuffers = [];
-                state.wavSampleRate = audioCtx.sampleRate || 44100;
-
-                processor.onaudioprocess = (e) => {
-                    if (state.wavRecordingIndex !== index) return;
-                    const inputData = e.inputBuffer.getChannelData(0);
-                    state.wavBuffers.push(new Float32Array(inputData));
-                };
-
-                source.connect(processor);
-                processor.connect(audioCtx.destination);
-
-                const btn = document.getElementById(`shadow-wav-btn-${index}`);
-                btn.classList.add('recording-active');
-                btn.innerHTML = '<i class="fa-solid fa-stop-circle"></i> <span>Dừng thu âm</span>';
-
-                const audioBox = document.getElementById(`shadow-audio-box-${index}`);
-                audioBox.classList.remove('hidden');
-                audioBox.innerHTML = `<p class="text-xs font-bold text-rose-600 flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang ghi âm giọng thật (WAV)... Hãy đọc to câu trên!</p>`;
-            } catch (err) {
-                showToast('Không thể mở Micro trên iPhone. Hãy mở link trực tiếp bằng trình duyệt Safari và cho phép Micro!', 'error');
-            }
-        }
-
-        async function stopActiveWavRecording() {
-            const index = state.wavRecordingIndex;
-            if (index === null) return;
-            state.wavRecordingIndex = null;
-
-            const btn = document.getElementById(`shadow-wav-btn-${index}`);
-            if (btn) {
-                btn.classList.remove('recording-active');
-                btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>Thu lại giọng tôi</span>';
-            }
-
-            try {
-                if (state.wavProcessor) state.wavProcessor.disconnect();
-                if (state.wavStream) state.wavStream.getTracks().forEach(t => t.stop());
-                if (state.wavAudioCtx) await state.wavAudioCtx.close();
-            } catch (e) {}
-
-            const buffers = state.wavBuffers;
-            const sampleRate = state.wavSampleRate;
-            state.wavBuffers = [];
-
-            const audioBox = document.getElementById(`shadow-audio-box-${index}`);
-            if (!buffers || buffers.length === 0) {
-                if (audioBox) {
-                    audioBox.innerHTML = `<p class="text-xs font-semibold text-amber-700">Chưa thu được tín hiệu âm thanh. Nếu bạn mở từ biểu tượng Màn hình chính iPhone, hãy mở trực tiếp trong <strong>Safari</strong> nhé!</p>`;
-                }
-                return;
-            }
-
-            const wavBlob = encodeWAVFromBuffers(buffers, sampleRate);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const dataUrl = reader.result;
-                state.userAudioBlobs[index] = dataUrl;
-                if (audioBox) {
-                    audioBox.classList.remove('hidden');
-                    audioBox.innerHTML = `
-                        <p class="text-[11px] font-bold text-indigo-800"><i class="fa-solid fa-headphones mr-1"></i> Bản thu âm giọng của bạn (bấm Play ▶ để nghe lại):</p>
-                        <audio id="shadow-audio-player-${index}" controls playsinline class="w-full h-10 rounded-lg" src="${dataUrl}"></audio>
-                    `;
-                }
-                showToast('Đã lưu bản thu âm giọng nói của bạn!', 'success');
-            };
-            reader.readAsDataURL(wavBlob);
-        }
-
         function encodeWAVFromBuffers(buffers, sampleRate) {
             let totalLength = 0;
             for (let i = 0; i < buffers.length; i++) totalLength += buffers[i].length;
-
             const merged = new Float32Array(totalLength);
             let offset = 0;
             for (let i = 0; i < buffers.length; i++) {
                 merged.set(buffers[i], offset);
                 offset += buffers[i].length;
             }
-
             const buffer = new ArrayBuffer(44 + merged.length * 2);
             const view = new DataView(buffer);
-
             const writeStr = (pos, str) => {
                 for (let i = 0; i < str.length; i++) view.setUint8(pos + i, str.charCodeAt(i));
             };
-
             writeStr(0, 'RIFF');
             view.setUint32(4, 36 + merged.length * 2, true);
             writeStr(8, 'WAVE');
@@ -1294,14 +1063,293 @@
             view.setUint16(34, 16, true);
             writeStr(36, 'data');
             view.setUint32(40, merged.length * 2, true);
-
             let idx = 44;
             for (let i = 0; i < merged.length; i++, idx += 2) {
                 const s = Math.max(-1, Math.min(1, merged[i]));
                 view.setInt16(idx, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
             }
-
             return new Blob([view], { type: 'audio/wav' });
+        }
+
+        async function toggleShadowingRecording(index) {
+            if (state.recordingSentenceIndex === index) {
+                await stopActiveShadowing();
+                return;
+            }
+
+            if (state.recordingSentenceIndex !== null) {
+                await stopActiveShadowing();
+                await new Promise(resolve => setTimeout(resolve, 250));
+            }
+
+            state.recordingSentenceIndex = index;
+            state.liveShadowTranscript = '';
+
+            const btn = document.getElementById(`shadow-mic-btn-${index}`);
+            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
+
+            btn.classList.add('recording-active');
+            btn.innerHTML = '<i class="fa-solid fa-stop-circle"></i> <span>Dừng & Chấm điểm</span>';
+
+            feedbackBox.classList.remove('hidden');
+            feedbackBox.innerHTML = `<div class="text-rose-600 font-semibold flex items-center gap-2"><i class="fa-solid fa-circle-dot fa-beat"></i> Đang thu âm... Hãy đọc to câu tiếng Đức ở trên!</div>`;
+
+            // =================================================================
+            // NHÁNH RIÊNG CHO iPHONE / iPAD (DÙNG WAV ĐỂ SAFARI PHÁT LẠI ĐƯỢC)
+            // =================================================================
+            if (isIOSDevice) {
+                stopSpeech();
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    showToast('Hãy mở bằng trình duyệt Safari trên iPhone để thu âm!', 'warning');
+                    await finalizeShadowingSentence(index);
+                    return;
+                }
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    const audioCtx = new AudioContextClass();
+                    if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+                    const source = audioCtx.createMediaStreamSource(stream);
+                    const processor = audioCtx.createScriptProcessor(4096, 1, 1);
+                    state.iosStream = stream;
+                    state.iosAudioCtx = audioCtx;
+                    state.iosProcessor = processor;
+                    state.iosBuffers = [];
+                    state.iosSampleRate = audioCtx.sampleRate || 44100;
+
+                    processor.onaudioprocess = (e) => {
+                        if (state.recordingSentenceIndex !== index) return;
+                        state.iosBuffers.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+                    };
+                    source.connect(processor);
+                    processor.connect(audioCtx.destination);
+                } catch (err) {
+                    showToast('Không thể mở Micro trên iPhone. Hãy cấp quyền Micro cho Safari!', 'warning');
+                    await finalizeShadowingSentence(index);
+                }
+                return;
+            }
+
+            // =================================================================
+            // NHÁNH PC (GIỮ NGUYÊN 100% CODE GỐC CỦA BẠN)
+            // =================================================================
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const supportedTypes = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'];
+                    const mimeType = supportedTypes.find(t => window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+                    const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+                    const chunks = [];
+                    state.activeMediaRecorder = mediaRecorder;
+
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data && e.data.size > 0) chunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        stream.getTracks().forEach(t => t.stop());
+                        if (chunks.length === 0) {
+                            showToast('Không thu được dữ liệu âm thanh từ Micro trên thiết bị này.', 'warning');
+                            return;
+                        }
+                        const finalType = mediaRecorder.mimeType || mimeType || 'audio/mp4';
+                        const blob = new Blob(chunks, { type: finalType });
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            const dataUrl = reader.result;
+                            state.userAudioBlobs[index] = dataUrl;
+
+                            const player = document.getElementById(`shadow-audio-player-${index}`);
+                            const replayBtn = document.getElementById(`shadow-replay-btn-${index}`);
+                            if (player) {
+                                player.src = dataUrl;
+                                player.classList.remove('hidden');
+                                player.classList.add('block');
+                                player.load();
+                            }
+                            if (replayBtn) {
+                                replayBtn.classList.remove('hidden');
+                                replayBtn.classList.add('flex');
+                            }
+                        };
+                        reader.readAsDataURL(blob);
+                    };
+
+                    mediaRecorder.start(200);
+                } catch (err) {
+                    showToast('Không thể mở Micro để ghi âm. Vui lòng cấp quyền Micro!', 'warning');
+                }
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                try {
+                    if (state.activeRecognition) {
+                        try { state.activeRecognition.abort(); } catch (e) {}
+                        state.activeRecognition = null;
+                    }
+                    const rec = new SpeechRecognition();
+                    rec.lang = 'de-DE';
+                    rec.continuous = true;
+                    rec.interimResults = true;
+
+                    rec.onresult = (event) => {
+                        let finalStr = '';
+                        let interimStr = '';
+                        for (let i = 0; i < event.results.length; i++) {
+                            if (event.results[i].isFinal) {
+                                finalStr += event.results[i][0].transcript + ' ';
+                            } else {
+                                interimStr += event.results[i][0].transcript;
+                            }
+                        }
+                        state.liveShadowTranscript = (finalStr + interimStr).trim();
+                        if (state.recordingSentenceIndex === index && state.liveShadowTranscript) {
+                            feedbackBox.innerHTML = `<div class="text-slate-600">Đang nhận diện: <span class="font-bold text-slate-900">"${state.liveShadowTranscript}"</span></div>`;
+                        }
+                    };
+
+                    rec.onerror = (e) => {
+                        console.warn('STT error:', e.error);
+                    };
+
+                    rec.onend = () => {
+                        if (state.recordingSentenceIndex === index && (!state.activeMediaRecorder || state.activeMediaRecorder.state === 'inactive')) {
+                            finalizeShadowingSentence(index);
+                        }
+                    };
+
+                    state.activeRecognition = rec;
+                    rec.start();
+                } catch (err) {
+                    console.warn('Could not start SpeechRecognition:', err);
+                }
+            }
+        }
+
+        async function stopActiveShadowing() {
+            const idx = state.recordingSentenceIndex;
+            if (idx === null) return;
+
+            if (isIOSDevice) {
+                try {
+                    if (state.iosProcessor) state.iosProcessor.disconnect();
+                    if (state.iosStream) state.iosStream.getTracks().forEach(t => t.stop());
+                    if (state.iosAudioCtx) await state.iosAudioCtx.close();
+                } catch (e) {}
+
+                const buffers = state.iosBuffers;
+                const sampleRate = state.iosSampleRate;
+                state.iosBuffers = [];
+
+                if (buffers && buffers.length > 0) {
+                    const wavBlob = encodeWAVFromBuffers(buffers, sampleRate);
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const dataUrl = reader.result;
+                        state.userAudioBlobs[idx] = dataUrl;
+                        const player = document.getElementById(`shadow-audio-player-${idx}`);
+                        const replayBtn = document.getElementById(`shadow-replay-btn-${idx}`);
+                        if (player) {
+                            player.src = dataUrl;
+                            player.classList.remove('hidden');
+                            player.classList.add('block');
+                            player.load();
+                        }
+                        if (replayBtn) {
+                            replayBtn.classList.remove('hidden');
+                            replayBtn.classList.add('flex');
+                        }
+                    };
+                    reader.readAsDataURL(wavBlob);
+                }
+                await finalizeShadowingSentence(idx);
+                return;
+            }
+
+            if (state.activeRecognition) {
+                try { state.activeRecognition.stop(); } catch (e) {}
+            }
+            if (state.activeMediaRecorder && state.activeMediaRecorder.state !== 'inactive') {
+                try { state.activeMediaRecorder.stop(); } catch (e) {}
+            }
+            await finalizeShadowingSentence(idx);
+        }
+
+        async function finalizeShadowingSentence(index) {
+            if (state.recordingSentenceIndex !== index) return;
+            state.recordingSentenceIndex = null;
+            state.activeMediaRecorder = null;
+
+            const btn = document.getElementById(`shadow-mic-btn-${index}`);
+            const feedbackBox = document.getElementById(`shadow-feedback-${index}`);
+            if (!btn || !feedbackBox) return;
+
+            btn.classList.remove('recording-active');
+            btn.innerHTML = '<i class="fa-solid fa-microphone"></i> <span>Thu âm lại</span>';
+
+            const spokenText = state.liveShadowTranscript.trim();
+            const targetText = state.sentences[index] || '';
+
+            if (!spokenText) {
+                feedbackBox.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-slate-700">
+                        <span><i class="fa-solid fa-check-circle text-teal-600 mr-1"></i> Đã lưu bản thu âm! Bạn có thể bấm nút <strong>Play (▶)</strong> trên thanh âm thanh ngay phía trên để nghe lại giọng mình.</span>
+                    </div>`;
+                return;
+            }
+
+            const cleanWords = (s) => s.toLowerCase().replace(/[.,!?;:"„“]/g, '').trim().split(/\s+/).filter(Boolean);
+            const targetWords = cleanWords(targetText);
+            const spokenWords = cleanWords(spokenText);
+
+            let matched = 0;
+            const wordChips = targetWords.map(w => {
+                const hit = spokenWords.includes(w);
+                if (hit) matched++;
+                return `<span class="px-2 py-0.5 rounded-md font-semibold text-xs ${hit ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">${w}</span>`;
+            }).join(' ');
+
+            const score = targetWords.length > 0 ? Math.round((matched / targetWords.length) * 100) : 0;
+            const badgeColor = score >= 80 ? 'text-emerald-700 bg-emerald-100' : (score >= 50 ? 'text-amber-700 bg-amber-100' : 'text-rose-700 bg-rose-100');
+
+            feedbackBox.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold text-slate-600">Máy nghe được bạn đọc:</span>
+                    <span class="font-bold px-2.5 py-0.5 rounded-full text-xs ${badgeColor}">Độ khớp: ${score}%</span>
+                </div>
+                <p class="text-slate-900 font-semibold">"${spokenText}"</p>
+                <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-slate-200/80">
+                    <span class="text-[11px] text-slate-500 mr-1">Chi tiết từ:</span> ${wordChips}
+                </div>
+            `;
+        }
+
+        function playUserShadowingAudio(index) {
+            stopSpeech();
+            const audioPlayer = document.getElementById(`shadow-audio-player-${index}`);
+            const replayBtn = document.getElementById(`shadow-replay-btn-${index}`);
+            if (!audioPlayer || !audioPlayer.src) {
+                showToast('Bạn chưa thu âm câu này.', 'warning');
+                return;
+            }
+
+            if (!audioPlayer.paused) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+                replayBtn.innerHTML = '<i class="fa-solid fa-headphones"></i> <span>Nghe lại giọng tôi</span>';
+                return;
+            }
+
+            replayBtn.innerHTML = '<i class="fa-solid fa-volume-high fa-beat-fade"></i> <span>Đang phát giọng tôi...</span>';
+            audioPlayer.onended = () => {
+                replayBtn.innerHTML = '<i class="fa-solid fa-headphones"></i> <span>Nghe lại giọng tôi</span>';
+            };
+            audioPlayer.play().catch(() => {
+                showToast('Hãy bấm trực tiếp nút Play (▶) trên thanh âm thanh phía trên để nghe nhé!', 'info');
+                replayBtn.innerHTML = '<i class="fa-solid fa-headphones"></i> <span>Nghe lại giọng tôi</span>';
+            });
         }
 
         // =========================================================================
@@ -1334,6 +1382,7 @@
             }
         }
 
+        // Thuật toán LCS (Longest Common Subsequence) chèn đúng vị trí từ thiếu mà không làm lệch các từ phía sau
         function diffWordsLCS(expectedArr, actualArr) {
             const m = expectedArr.length;
             const n = actualArr.length;
@@ -1363,10 +1412,16 @@
                     i--;
                     j--;
                 } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
-                    diffResult.unshift({ type: 'wrong', word: actualArr[j - 1] });
+                    diffResult.unshift({
+                        type: 'wrong',
+                        word: actualArr[j - 1]
+                    });
                     j--;
                 } else {
-                    diffResult.unshift({ type: 'missing', expected: expectedArr[i - 1] });
+                    diffResult.unshift({
+                        type: 'missing',
+                        expected: expectedArr[i - 1]
+                    });
                     i--;
                 }
             }
@@ -1500,7 +1555,7 @@
         }
 
         // =========================================================================
-        // 9. TAB 4: NÓI CHUYỆN VỚI AI
+        // 9. TAB 4: NÓI CHUYỆN VỚI AI (KHÔNG HỐI THÚC + LỌC LẶP TỪ + GỢI Ý BẬT/TẮT)
         // =========================================================================
         function renderChunks() {
             const grid = document.getElementById('chunks-grid');
@@ -1699,6 +1754,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        // Lọc bỏ các từ bị lặp do trình duyệt ghép âm tạm thời (ví dụ "geht's es" -> "geht's")
         function cleanRecognizedGerman(rawText) {
             return rawText
                 .replace(/\bgeht's\s+es\b/gi, "geht's")
@@ -1718,7 +1774,7 @@
             const btn = document.getElementById('btn-mic-toggle');
             const label = document.getElementById('mic-btn-label');
             const icon = document.getElementById('mic-icon');
-            const input = document.getElementById('chat-text-input');
+            const input = document.getElementById('chat-input') || document.getElementById('chat-text-input');
 
             if (state.isChatRecording && chatRecognition) {
                 chatRecognition.stop();
@@ -1731,8 +1787,8 @@
 
             chatRecognition = new SpeechRecognition();
             chatRecognition.lang = 'de-DE';
-            chatRecognition.continuous = true;
-            chatRecognition.interimResults = false;
+            chatRecognition.continuous = !isIOSDevice;
+            chatRecognition.interimResults = false; // Chỉ chốt cụm hoàn chỉnh để tránh lặp từ rác
 
             let baseText = input.value ? input.value.trim() + ' ' : '';
 
@@ -1746,7 +1802,9 @@
             chatRecognition.onresult = (event) => {
                 let chunk = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) chunk += event.results[i][0].transcript + ' ';
+                    if (event.results[i].isFinal) {
+                        chunk += event.results[i][0].transcript + ' ';
+                    }
                 }
                 if (chunk) {
                     baseText += chunk;
@@ -1771,7 +1829,9 @@
         }
 
         async function sendChatMessage() {
-            if (state.isChatRecording && chatRecognition) chatRecognition.stop();
+            if (state.isChatRecording && chatRecognition) {
+                chatRecognition.stop();
+            }
 
             const input = document.getElementById('chat-text-input');
             const userText = input.value.trim();
@@ -1811,12 +1871,14 @@ Nhiệm vụ của bạn gồm các phần sau và PHẢI trả về đúng đ�
 
             try {
                 const responseJson = await callGeminiStructured(systemPrompt, userPrompt);
+                
                 appendChatMessage('ai', responseJson.replyGerman, responseJson.replyVietnamese, {
                     vocabHints: responseJson.vocabHints,
                     sampleReplies: responseJson.sampleReplies
                 });
                 state.chatHistory.push({ role: 'model', text: responseJson.replyGerman });
                 speakGerman(responseJson.replyGerman);
+
                 renderGrammarFeedback(userText, responseJson);
             } catch (err) {
                 showToast('Không thể kết nối AI lúc này. Vui lòng thử gửi lại!', 'error');
